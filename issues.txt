@@ -1,0 +1,24 @@
+Install gen-idea plugin
+
+
+sbt-no-nexus
+
+
+Cannot find source code for scalajs jar
+
+
+
+Converting scala types to js.Any
+example:
+
+case class Point(x: Int, y:      Int)
+import scala.scalajs.js
+import js.Dynamic.{ global => g }
+    g.console.log(p)
+[error]  found   : example.Point
+[error]  required: scala.scalajs.js.Any
+[error]     g.console.                log(p)
+[error]                   ^
+
+use .asInstanceOf[js.Any]
+
