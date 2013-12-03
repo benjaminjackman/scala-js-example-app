@@ -2,44 +2,55 @@ package example
 
 import scala.scalajs.js
 import js.Dynamic.{global => g}
-import scala.scalajs.js.annotation.JSName
+import org.scalajs.jquery.{JQueryAjaxSettings, JQueryStatic}
+import example.SerAjax.HttpRequestTypes
 
-case class Point(val x: Int, val y: Int) {
+//Simple library for performing ajax calls in a semi-efficent way
+object SerAjax {
+  val jQuery: JQueryStatic = g.jQuery.asInstanceOf[JQueryStatic]
 
-}
-
-object JsPoint {
-
-  implicit class PointOps(val p: JsPoint) extends AnyVal {
-    def tot = p.x + p.y
+  object JsPromise {
+//    implicit class JsPromiseExtensions[A](val promise : JsPromise[A]) extends AnyVal {
+//      def map[B](f : A => B) = {
+//        promise.`then`(f)
+//      }
+//    }
   }
 
-}
+  trait JsPromise[A] extends js.Object {
+    def `then`(onFulfilled: js.Any) = ???
+  }
 
-trait JsPoint extends js.Object {
-  def x(): Int = ???
+  object HttpRequestTypes extends Enumeration {
+    type HttpRequestType = Value
+    val Get = Value("Get")
+    val Post = Value("Post")
+    val Put = Value("Put")
+    val Delete = Value("Delete")
+  }
 
-  def y(): Int = ???
-}
+  def apply(url: String, requestType: HttpRequestTypes.HttpRequestType, data: String) = {
+    jQuery.ajax(js.Dictionary(
+      "url" -> url,
+      "type" -> requestType.toString,
+      "data" -> data
+    ).asInstanceOf[JQueryAjaxSettings]).asInstanceOf[JsPromise[js.Dynamic]]
+  }
 
-@JSName("d3")
-trait D3 extends js.Object {
-  def max[A](xs: js.Array[A]): A
 
-  def max[A, B](xs: js.Array[A], f: A => B): B
 }
 
 object ScalaJSExample {
+  val jQuery: JQueryStatic = g.jQuery.asInstanceOf[JQueryStatic]
+
   def main(): Unit = {
-    //    val p = Point(3,4).asInstanceOf[JsPoint]
+    jQuery("#content").html("Hello World!")
+    val url = "http://phi.portal.cgtanalytics.com/rpc/"
+    val data = """{"id":"6","calls":[{"name":"spyder.positions","args":{"tday":20131203}}]}"""
 
-    val paragraph = js.Globals.document.createElement("p")
+//    g.eval("debugger")
 
-    paragraph.innerHTML = s"<strong>${Map(1 -> "!Hi", 2 -> "2", 3 -> "Three")}It works!</strong>"
-    g.document.getElementById("playground").appendChild(paragraph)
-    //    g.console.log(p.tot)
-    val d3 = g.d3.asInstanceOf[D3]
-    g.console.log(d3.max(js.Array(1, 2, 3)))
+    SerAjax(url, HttpRequestTypes.Post, data).then((x: js.Any) => g.console.log(x))
 
   }
 }
