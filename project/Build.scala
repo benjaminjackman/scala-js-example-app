@@ -5,8 +5,20 @@ import ScalaJSKeys._
 
 object Build extends sbt.Build {
   lazy val root = project.in(file(".")).settings(
-    scalaJSSettings: _*
-  ).dependsOn(Libs.dom, Libs.jQuery)
+    scalaJSSettings: _*).settings(
+    scalacOptions += "-deprecation",
+    scalacOptions += "-unchecked",
+    scalacOptions += "-feature",
+    scalacOptions += "-language:implicitConversions",
+    scalacOptions += "-language:existentials",
+    scalacOptions += "-language:higherKinds"
+  ).settings(
+        // Continuation plugin
+      autoCompilerPlugins := true,
+      libraryDependencies += compilerPlugin(
+          "org.scala-lang.plugins" % "continuations" % scalaVersion.value),
+      scalacOptions += "-P:continuations:enable"
+    ).dependsOn(Libs.dom, Libs.jQuery)
 
 //  lazy val root = project.in(file(".")).settings(
 //    scalaJSSettings: _*
