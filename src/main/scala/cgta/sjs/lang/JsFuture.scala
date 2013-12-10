@@ -44,18 +44,19 @@ trait JsFuture[A] {
   def foreach(f: A => Unit): Unit
 
   def map[B](f: A => B): JsFuture[B] = {
-    val d = new JsPromise()
-    foreach {
-      x =>
-        f(x)
-    }
-    d.future
+//    val d = new JsPromise()
+//    foreach {
+//      x =>
+//        f(x)
+//    }
+//    d.future
+    ???
   }
 }
 
 class JsPromise[A] {
   var value: Option[A] = None
 
-  def future: JsFuture[A]
+  def future: JsFuture[A] = ???
 }
 

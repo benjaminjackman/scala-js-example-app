@@ -33,8 +33,8 @@ object AjaxHelp {
   }
 
 
-  def apply[A](url: String, requestType: HttpRequestTypes.HttpRequestType, data: Option[String]): JsFuture[A] = {
-    JsFuture.fromAPlus[A] {
+  def apply[A](url: String, requestType: HttpRequestTypes.HttpRequestType, data: Option[String]): Future[A] = {
+    aplusToScala[A] {
       val req = js.Dictionary(
         "url" -> url,
         "type" -> requestType.toString

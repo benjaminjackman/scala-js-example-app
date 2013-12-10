@@ -3,8 +3,8 @@ package services
 
 import scala.scalajs.js
 import cgta.sjs.io.AjaxHelp
-import cgta.sjs.lang.JsFuture
 import org.scalajs.jquery.JQueryStatic
+import scala.concurrent.Future
 
 
 //////////////////////////////////////////////////////////////
@@ -20,7 +20,7 @@ import org.scalajs.jquery.JQueryStatic
 object PoeRpcService {
   val jQuery = global.jQuery.asInstanceOf[JQueryStatic]
 
-  private def get[A](url: String, params: js.Any): JsFuture[js.Array[A]] = {
+  private def get[A](url: String, params: js.Any): Future[js.Array[A]] = {
     AjaxHelp(url, AjaxHelp.HttpRequestTypes.Post, params.nullSafe.map(s => jQuery.param(s)))
   }
 
@@ -31,7 +31,7 @@ object PoeRpcService {
     val level: Int
     val name: String
   }
-  def getCharacters(): JsFuture[js.Array[CharacterInfo]] = {
+  def getCharacters(): Future[js.Array[CharacterInfo]] = {
     get(url = "http://www.pathofexile.com/character-window/get-characters", params = null)
   }
 }

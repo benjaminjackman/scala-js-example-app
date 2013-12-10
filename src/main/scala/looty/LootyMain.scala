@@ -4,6 +4,7 @@ import scala.scalajs.js.Dynamic
 import looty.views.LootGrid
 import scala.scalajs.js
 import looty.services.PoeRpcService
+import scala.concurrent.ExecutionContext
 
 
 //////////////////////////////////////////////////////////////
@@ -18,6 +19,16 @@ import looty.services.PoeRpcService
 object LootyMain {
 
   import scala.util.continuations._
+
+  implicit object JsExecutionContext extends ExecutionContext {
+    def execute(runnable: Runnable): Unit = {
+      runnable.run()
+    }
+
+    def reportFailure(t: Throwable): Unit = {
+      throw t
+    }
+  }
 
 
   def main(args: Array[String]) {
