@@ -21,21 +21,21 @@ object LootyMain {
 
 
   def main(args: Array[String]) {
-    Dynamic.global.console.log("Hello World! Looty Main!")
+    console.log("Hello World! Looty Main!")
     //Right now just show the loot grid page
-    PoeRpcService.getCharacters()
+    PoeRpcService.getCharacters().foreach(chars => console.log(chars))
 
-    def foo() = {
-    println("Once here.")
-    shift((k: Int => Int) => k(k(k(7))))
-    }
-    def bar() = {
-    1+ foo()
-    }
-    def baz() = {
-    reset(bar() * 2)
-    }
-    baz()  // result 70
+    //    def foo() = {
+    //    println("Once here.")
+    //    shift((k: Int => Int) => k(k(k(7))))
+    //    }
+    //    def bar() = {
+    //    1+ foo()
+    //    }
+    //    def baz() = {
+    //    reset(bar() * 2)
+    //    }
+    //    baz()  // result 70
 
 
   }

@@ -13,24 +13,49 @@ import scala.scalajs.js
 //////////////////////////////////////////////////////////////
 
 
-object JsPromise {
-  def fromAPlus[A](that : js.Dynamic) : JsPromise[A] = {
+object JsFuture {
+  def fromAPlus[A](that: js.Dynamic): JsFuture[A] = {
     //See http://promises-aplus.github.io/promises-spec/
     PRINT | "JsDynamic"
     PRINT | that
-    new JsPromise[A] {
+    new JsFuture[A] {
       //Uses continuations to return the result in what appears to be a synchronous fashion
       //If there was an error an exception is thrown
-      def get: A = {
+      override def get: A = {
         ???
+      }
+
+      override def foreach(f: A => Unit) {
+        that.`then` {
+          data: js.Any =>
+            f(data.asInstanceOf[A])
+        }
       }
     }
   }
 
 }
 
-trait JsPromise[A] {
+trait JsFuture[A] {
   //Uses continuations to return the result in what appears to be a synchronous fashion
   //Exceptions will propagate normally etc.
-  def get : A
+  def get: A
+
+  def foreach(f: A => Unit): Unit
+
+  def map[B](f: A => B): JsFuture[B] = {
+    val d = new JsPromise()
+    foreach {
+      x =>
+        f(x)
+    }
+    d.future
+  }
 }
+
+class JsPromise[A] {
+  var value: Option[A] = None
+
+  def future: JsFuture[A]
+}
+

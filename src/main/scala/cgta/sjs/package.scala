@@ -21,6 +21,7 @@ object SjsDsl {
 
 trait SjsDsl {
   def global = js.Dynamic.global
+  def console = global.console
 
   object PRINT {
     def |(s: js.Any) {

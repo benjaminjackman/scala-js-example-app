@@ -3,7 +3,8 @@ package io
 
 import org.scalajs.jquery.{JQueryAjaxSettings, JQueryStatic}
 import scala.scalajs.js
-import cgta.sjs.lang.JsPromise
+import cgta.sjs.lang.JsFuture
+import scala.concurrent.{Promise, Future}
 
 //////////////////////////////////////////////////////////////
 // Copyright (c) 2013 Ben Jackman, Jeff Gomberg
@@ -25,8 +26,15 @@ object AjaxHelp {
     val Delete = Value("Delete")
   }
 
-  def apply[A](url: String, requestType: HttpRequestTypes.HttpRequestType, data: Option[String]): JsPromise[A] = {
-    JsPromise.fromAPlus[A] {
+  def aplusToScala[A](that: js.Dynamic): Future[A] = {
+    val p = Promise[A]()
+    that.`then`((data: js.Any) => p.success(data.asInstanceOf[A]))
+    p.future
+  }
+
+
+  def apply[A](url: String, requestType: HttpRequestTypes.HttpRequestType, data: Option[String]): JsFuture[A] = {
+    JsFuture.fromAPlus[A] {
       val req = js.Dictionary(
         "url" -> url,
         "type" -> requestType.toString
