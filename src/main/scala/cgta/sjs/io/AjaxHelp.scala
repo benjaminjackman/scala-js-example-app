@@ -3,8 +3,8 @@ package io
 
 import org.scalajs.jquery.{JQueryAjaxSettings, JQueryStatic}
 import scala.scalajs.js
-import cgta.sjs.lang.JsFuture
-import scala.concurrent.{Promise, Future}
+import cgta.sjs.lang.JsPromise
+import scala.concurrent.Future
 
 //////////////////////////////////////////////////////////////
 // Copyright (c) 2013 Ben Jackman, Jeff Gomberg
@@ -27,7 +27,7 @@ object AjaxHelp {
   }
 
   def aplusToScala[A](that: js.Dynamic): Future[A] = {
-    val p = Promise[A]()
+    val p = JsPromise[A]()
     that.`then`((data: js.Any) => p.success(data.asInstanceOf[A]))
     p.future
   }
