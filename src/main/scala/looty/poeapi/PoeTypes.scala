@@ -15,6 +15,8 @@ import cgta.sjs.lang.Nullable
 
 object PoeTypes {
 
+  type Characters = js.Array[CharacterInfo]
+
   object Leagues extends Enumeration {
     type League = Value
     val Standard   = Value("Standard")

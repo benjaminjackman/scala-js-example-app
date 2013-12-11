@@ -26,7 +26,7 @@ object PoeRpcs {
     AjaxHelp(url, AjaxHelp.HttpRequestTypes.Post, params.nullSafe.map(s => jQuery.param(s)))
   }
 
-  def getCharacters(): Future[js.Array[CharacterInfo]] = {
+  def getCharacters(): Future[Characters] = {
     get[js.Array[CharacterInfo]](url = "http://www.pathofexile.com/character-window/get-characters", params = null)
   }
 

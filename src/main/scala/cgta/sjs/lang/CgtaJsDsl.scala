@@ -26,7 +26,7 @@ trait CgtaJsDsl extends JsExtensions {
   //Converts a callback style into a future
   //el.on("click", (x) => console.log(x))
   //decant(el.on("click", _)).onSuccess(console.log(_))
-  def decant[A](cb0 : ((A) => Unit) => Unit) : Future[A] = {
+  def decant1[A](cb0 : ((A) => Unit) => Unit) : Future[A] = {
     val p = JsPromise[A]()
     def cb(a : A) {
       p.success(a)
@@ -34,6 +34,15 @@ trait CgtaJsDsl extends JsExtensions {
     cb0(cb)
     p.future
   }
+  def decant0(cb0 : (() => Unit) => Unit) : Future[Unit] = {
+    val p = JsPromise[Unit]()
+    def cb() {
+      p.success(Unit)
+    }
+    cb0(cb)
+    p.future
+  }
+
 
   implicit val jsExecutionContext = JsFuture.InternalCallbackExecutor
 

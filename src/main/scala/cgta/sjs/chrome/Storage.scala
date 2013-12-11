@@ -31,7 +31,7 @@ object Storage extends js.Object {
     //    def get(keys: js.Array[js.String], cb: js.Dynamic => Unit) = ???
 
     def get(keys: js.Any) = ???
-    def get(keys: js.Any, cb: js.Function1[js.Any, Unit]) = ???
+    def get[B <: js.Any](keys: js.Any, cb: js.Function1[B, Unit]) = ???
 
     def remove(keys: js.Any, cb: js.Function0[Unit]) = ???
 

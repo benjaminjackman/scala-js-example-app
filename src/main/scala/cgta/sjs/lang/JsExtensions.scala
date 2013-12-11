@@ -25,13 +25,17 @@ object JsExtensions {
   }
 
   implicit class JsFutureExtensions[A](val f: Future[A]) extends AnyVal {
-    def log(prefix: String = null) = {
+    def log(prefix: String = null) : Future[A] = {
+      val p = JsPromise[A]()
       f.onComplete {
         case Success(x) =>
           if (prefix != null) console.log(prefix, x) else console.log(x)
+          p.success(x)
         case Failure(t) =>
           if (prefix != null) console.error(prefix, t) else console.error(t)
+          p.failure(t)
       }
+      p.future
     }
   }
 }
