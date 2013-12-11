@@ -1,14 +1,19 @@
-package cgta
+package cgta.sjs
+package lang
 
-import cgta.sjs.lang.CgtaJsDsl
+import scala.scalajs.js
+
 
 //////////////////////////////////////////////////////////////
 // Copyright (c) 2013 Ben Jackman, Jeff Gomberg
 // All Rights Reserved
 // please contact ben@jackman.biz or jeff@cgtanalytics.com
 // for licensing inquiries
-// Created by bjackman @ 12/9/13 11:12 PM
+// Created by bjackman @ 12/11/13 12:17 AM
 //////////////////////////////////////////////////////////////
 
 
-package object sjs extends CgtaJsDsl
+trait JsConsole extends js.Object {
+  def log(xs : Any*)
+  def error(xs : Any*)
+}

@@ -1,14 +1,17 @@
-package cgta
+package looty
 
-import cgta.sjs.lang.CgtaJsDsl
 
 //////////////////////////////////////////////////////////////
 // Copyright (c) 2013 Ben Jackman, Jeff Gomberg
 // All Rights Reserved
 // please contact ben@jackman.biz or jeff@cgtanalytics.com
 // for licensing inquiries
-// Created by bjackman @ 12/9/13 11:12 PM
+// Created by bjackman @ 12/11/13 12:37 AM
 //////////////////////////////////////////////////////////////
 
 
-package object sjs extends CgtaJsDsl
+class PoeSynchronizer {
+
+
+
+}

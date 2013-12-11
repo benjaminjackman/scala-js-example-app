@@ -1,9 +1,9 @@
 package looty
 
-import scala.scalajs.js
 import looty.poeapi.PoeRpcs
-import cgta.sjs.lang.Nullable
-import scala.concurrent.ExecutionContext
+import looty.poeapi.PoeTypes.Leagues
+import cgta.sjs.chrome.Storage
+import scala.scalajs.js
 
 
 //////////////////////////////////////////////////////////////
@@ -17,50 +17,19 @@ import scala.concurrent.ExecutionContext
 
 object LootyMain {
 
-
-  trait TryNullable extends js.Object {
-    val x: js.Number
-    val y: Nullable[js.Number]
-  }
-
-  implicit object JsExecutionContext extends ExecutionContext {
-    def execute(runnable: Runnable): Unit = {
-      runnable.run()
-    }
-
-    def reportFailure(t: Throwable): Unit = {
-      throw t
-    }
-  }
-
-
   def main(args: Array[String]) {
     console.log("Hello World! Looty Main!")
-    //    PoeRpcs.getCharacters().foreach(chars => console.log(chars))
 
-    //    val s = js.Dictionary("x" -> 5).asInstanceOf[TryNullable]
-    //    console.log(s.y.get)
+    Storage.local.clear()
+    val s = newObject
+    s.x = 5
+    Storage.local.set(s)
+    Storage.local.get(s, (x : js.Any) => console.log(x))
 
-    //    val x = js.Dictionary().asInstanceOf[js.Dynamic]
-    //    s"${x.y}"
-
-    val x = js.Dictionary("y" -> null).asInstanceOf[js.Dynamic]
-    s"${x.y}" //throws:Uncaught TypeError: Cannot call method 'toString' of null
-
-    //  import scala.util.continuations._
-    //    def foo() = {
-    //    println("Once here.")
-    //    shift((k: Int => Int) => k(k(k(7))))
-    //    }
-    //    def bar() = {
-    //    1+ foo()
-    //    }
-    //    def baz() = {
-    //    reset(bar() * 2)
-    //    }
-    //    baz()  // result 70
-
-
+    PoeRpcs.getCharacters().log("CI")
+    PoeRpcs.getStashTab(league = Leagues.Standard.toString, tabIndex = 0).onComplete(x => console.log("ST", x))
+    PoeRpcs.getStashTabInfo(league = Leagues.Standard.toString).onComplete(x => console.log("SI", x))
+    PoeRpcs.getCharacterInventory(character = "BAM__SLAM").onComplete(x => console.log("CI", x))
   }
 
 }

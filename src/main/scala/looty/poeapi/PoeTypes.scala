@@ -15,6 +15,13 @@ import cgta.sjs.lang.Nullable
 
 object PoeTypes {
 
+  object Leagues extends Enumeration {
+    type League = Value
+    val Standard   = Value("Standard")
+    val Domination = Value("Domination")
+    val Hardcore   = Value("Hardcore")
+    val Nemesis    = Value("Nemesis")
+  }
 
   trait CharacterInfo extends js.Object {
     val `class`: js.String
@@ -24,13 +31,19 @@ object PoeTypes {
     val name   : js.String
   }
 
+  trait Inventory extends js.Object {
+    val error    : Nullable[js.String]
+    val character: js.String
+    val items    : js.Array[AnyItem]
+  }
 
   trait StashTab extends js.Object {
-    val error  : js.String
     val numTabs: js.Number
     val items  : js.Array[AnyItem]
-    val tabs   : js.Array[StashTabInfo]
-    val info   : StashTabInfo
+
+    //Returned optionally when tabs = 1 is set
+    val tabs   : Nullable[js.Array[StashTabInfo]]
+    val error  : Nullable[js.String]
   }
 
   trait StashTabInfo extends js.Object {
@@ -69,7 +82,7 @@ object PoeTypes {
     val socketedItems: js.Array[AnyItem]
 
     //For items that are not socketed in other items
-    val x: js.Number
+    val x          : js.Number
     //The top left corner, when in an item slot, this is 0,0 from what i can tell
     val y          : js.Number
     val inventoryId: js.String

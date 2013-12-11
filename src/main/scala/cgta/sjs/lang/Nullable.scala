@@ -20,6 +20,7 @@ object Nullable {
     def map[B](f: A => B): Nullable[B] =
       if (isNull) f(a.get).asInstanceOf[Nullable[B]]
       else null.asInstanceOf[Nullable[B]]
+    def toOption: Option[A] = if (isDefined) Some(get) else None
   }
 }
 

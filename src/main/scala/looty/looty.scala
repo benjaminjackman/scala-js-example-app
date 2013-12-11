@@ -1,4 +1,4 @@
-import cgta.SjsDsl
+import cgta.sjs.lang.CgtaJsDsl
 
 //////////////////////////////////////////////////////////////
 // Copyright (c) 2013 Ben Jackman, Jeff Gomberg
@@ -8,6 +8,6 @@ import cgta.SjsDsl
 // Created by bjackman @ 12/9/13 11:57 PM
 //////////////////////////////////////////////////////////////
 
-package object looty extends SjsDsl {
+package object looty extends CgtaJsDsl {
 
 }

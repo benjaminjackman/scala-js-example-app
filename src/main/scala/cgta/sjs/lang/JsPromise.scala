@@ -19,9 +19,27 @@ import scala.scalajs.js
 //////////////////////////////////////////////////////////////
 
 object JsFuture {
+
+  class JsFutureFailure(val reason: Any) extends Exception
+
+  def wrapPromisesAPlus[A](that: js.Dynamic): Future[A] = {
+    def wrapAPlusReason(reason: js.Any): Throwable = {
+      reason match {
+        case reason: Throwable => reason
+        case x => new JsFutureFailure(reason)
+      }
+    }
+
+    val p = JsPromise[A]()
+    that.`then`((data: js.Any) => p.success(data.asInstanceOf[A]),
+      (reason: js.Any) => p.failure(wrapAPlusReason(reason))
+    )
+    p.future
+  }
+
   val Promise = JsPromise
 
-  private[lang] object InternalCallbackExecutor extends ExecutionContext {
+  object InternalCallbackExecutor extends ExecutionContext {
     def execute(runnable: Runnable): Unit = {
       js.Dynamic.global.setTimeout(() => {
         runnable.run()

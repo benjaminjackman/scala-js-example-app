@@ -37,6 +37,49 @@ Versus Scala Behaviour
     scala> s"${Y.x}"
     res1: String = null
 
+
+# How does one make a simple javascript object?
+dictionaries seem to have issues when the types are mixed
+for example
+    val d = js.Dictionary (
+      "x" -> "AString",
+      "y" -> 4
+    )
+errors out with
+    [error] No implicit view available from Any => scala.scalajs.js.Any.
+    [error]     val d = js.Dictionary (
+    [error]                           ^
+    [error] one error found
+
+Here is what I went with:
+    val d = js.Object().asInstanceOf[js.Dynamic]
+    d.x = "AString"
+    d.y = 4
+
+I will write a dsl to make this better i think
+
+
+## Additions
+#Promises and future
+I have gotten an implemenation of the scala Future/Promises they convert over from APlus futures
+this makes callback styled programming a lot better.
+
+I would like to look into continuations as well as a well to make the code look like normal blocking
+code
+
+
+
+## Suggestions
+Would really be nice to have the asInstanceOf[js.SomeJsType] checks actually validate the types,
+maybe isInstanceOf does this already? some sort of structural type checking would be useful
+when interacting with APIs from websites to do some validation
+
+## Tips
+# debugger
+Use this line to pause execution of the script and show a debugger in chrome when the dev tools are open
+    js.eval("debugger")
+
+
 # Misc
 Install gen-idea plugin
 
