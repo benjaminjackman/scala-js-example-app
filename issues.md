@@ -60,13 +60,41 @@ I will write a dsl to make this better i think
 
 
 ## Additions
-#Promises and future
+# Promises and future
 I have gotten an implemenation of the scala Future/Promises they convert over from APlus futures
 this makes callback styled programming a lot better.
 
+I also added implicits to them to assist with js-centric development they located at
+/src/main/scala/cgta/sjs/lang/JsExtensions.scala
+
+there is a .log() that will log the result of a future, which I have found to be very handy
+for exploring apis.
+
+
+# Continuations
 I would like to look into continuations as well as a well to make the code look like normal blocking
 code
 
+# Decant a helper for converting callbacks to futures
+I made a simple function that can convert basic structures to futures very easily
+it's in /src/main/scala/cgta/sjs/lang/CgtaJsDsl.scala
+    //Converts a callback style into a future
+    //el.on("click", (x) => console.log(x))
+    //decant(el.on("click", _)).onSuccess(console.log(_))
+    def decant[A](cb0 : ((A) => Unit) => Unit) : Future[A] = {
+      val p = JsPromise[A]()
+      def cb(a : A) {
+        p.success(a)
+      }
+      cb0(cb)
+      p.future
+    }
+Here is a sample usage:
+    val s = newObject
+    s.x = 5
+    Storage.local.set(s)
+    decant[js.Any](Storage.local.get(s, _)).log()
+    //Prints Object {x: 5}
 
 
 ## Suggestions

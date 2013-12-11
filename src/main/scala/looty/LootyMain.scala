@@ -20,11 +20,11 @@ object LootyMain {
   def main(args: Array[String]) {
     console.log("Hello World! Looty Main!")
 
-    Storage.local.clear()
+
     val s = newObject
     s.x = 5
     Storage.local.set(s)
-    Storage.local.get(s, (x : js.Any) => console.log(x))
+    decant[js.Any](Storage.local.get(null, _)).log("Storage has")
 
     PoeRpcs.getCharacters().log("CI")
     PoeRpcs.getStashTab(league = Leagues.Standard.toString, tabIndex = 0).onComplete(x => console.log("ST", x))
