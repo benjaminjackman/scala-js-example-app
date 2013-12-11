@@ -18,7 +18,7 @@ import scala.concurrent.ExecutionContext
 
 object LootyMain {
 
-  import scala.util.continuations._
+
 
   implicit object JsExecutionContext extends ExecutionContext {
     def execute(runnable: Runnable): Unit = {
@@ -36,6 +36,7 @@ object LootyMain {
     //Right now just show the loot grid page
     PoeRpcService.getCharacters().foreach(chars => console.log(chars))
 
+    //  import scala.util.continuations._
     //    def foo() = {
     //    println("Once here.")
     //    shift((k: Int => Int) => k(k(k(7))))
