@@ -1,9 +1,8 @@
 package looty
 
-import scala.scalajs.js.Dynamic
-import looty.views.LootGrid
 import scala.scalajs.js
-import looty.services.PoeRpcService
+import looty.poeapi.PoeRpcs
+import cgta.sjs.lang.Nullable
 import scala.concurrent.ExecutionContext
 
 
@@ -19,6 +18,10 @@ import scala.concurrent.ExecutionContext
 object LootyMain {
 
 
+  trait TryNullable extends js.Object {
+    val x: js.Number
+    val y: Nullable[js.Number]
+  }
 
   implicit object JsExecutionContext extends ExecutionContext {
     def execute(runnable: Runnable): Unit = {
@@ -33,8 +36,16 @@ object LootyMain {
 
   def main(args: Array[String]) {
     console.log("Hello World! Looty Main!")
-    //Right now just show the loot grid page
-    PoeRpcService.getCharacters().foreach(chars => console.log(chars))
+    //    PoeRpcs.getCharacters().foreach(chars => console.log(chars))
+
+    //    val s = js.Dictionary("x" -> 5).asInstanceOf[TryNullable]
+    //    console.log(s.y.get)
+
+    //    val x = js.Dictionary().asInstanceOf[js.Dynamic]
+    //    s"${x.y}"
+
+    val x = js.Dictionary("y" -> null).asInstanceOf[js.Dynamic]
+    s"${x.y}" //throws:Uncaught TypeError: Cannot call method 'toString' of null
 
     //  import scala.util.continuations._
     //    def foo() = {

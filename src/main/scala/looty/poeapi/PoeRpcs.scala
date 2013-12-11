@@ -1,5 +1,5 @@
 package looty
-package services
+package poeapi
 
 import scala.scalajs.js
 import cgta.sjs.io.AjaxHelp
@@ -16,22 +16,30 @@ import scala.concurrent.Future
 //////////////////////////////////////////////////////////////
 
 
+object PoeRpcs {
 
-object PoeRpcService {
+  import PoeTypes._
+
   val jQuery = global.jQuery.asInstanceOf[JQueryStatic]
 
   private def get[A](url: String, params: js.Any): Future[js.Array[A]] = {
     AjaxHelp(url, AjaxHelp.HttpRequestTypes.Post, params.nullSafe.map(s => jQuery.param(s)))
   }
 
-  trait CharacterInfo extends js.Object {
-    val `class`: String
-    val classId: Int
-    val league: String
-    val level: Int
-    val name: String
-  }
   def getCharacters(): Future[js.Array[CharacterInfo]] = {
     get(url = "http://www.pathofexile.com/character-window/get-characters", params = null)
+  }
+
+
+
+
+  def getStashTab(league: String, tabIndex: Int): Future[StashTab] = {
+    //    var url = "http://www.pathofexile.com/character-window/get-stash-items";
+    //    return this.getItems<StashTab>(url, {league: league, tabIndex: tabIndex, tabs: 1}).then(function (stashTab:StashTab) {
+    //      stashTab.info = stashTab.tabs[tabIndex]
+    //      delete stashTab.tabs
+    //      return stashTab
+    //    })
+  ???
   }
 }
