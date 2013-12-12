@@ -34,10 +34,10 @@ object PoeRpcs {
     enqueue[Inventory](url = "http://www.pathofexile.com/character-window/get-items", params = p)
   }
 
-  def getStashTab(league: League, tabIndex: Int): Future[StashTab] = {
+  def getStashTab(league: League, tabIdx: Int): Future[StashTab] = {
     val p = newObject
     p.league = league.toString
-    p.tabIndex = tabIndex
+    p.tabIndex = tabIdx
 
     enqueue[StashTab](url = "http://www.pathofexile.com/character-window/get-stash-items", params = p)
   }

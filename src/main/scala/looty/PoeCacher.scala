@@ -3,7 +3,7 @@ package looty
 import looty.poeapi.PoeRpcs
 import cgta.cjs.chrome.Storage
 import scala.concurrent.Future
-import looty.poeapi.PoeTypes.{StashTabInfos, StashTabInfo, Inventory, Characters}
+import looty.poeapi.PoeTypes.{StashTab, StashTabInfos, StashTabInfo, Inventory, Characters}
 import cgta.cjs.lang.JsFuture
 import looty.poeapi.PoeTypes.Leagues.League
 
@@ -21,21 +21,6 @@ import looty.poeapi.PoeTypes.Leagues.League
  */
 class PoeCacher(account: String = "UnknownAccount!") {
 
-
-  //Used for net calls since GGG throttles the requests we can make per period
-  //When we received a 'you are requesting too quickly failure from them
-  //we will start throttling
-  //  def throttleOnFailure[A](fut :  => Future[A]) : Future[A] = {
-  //    val retryMs = 10000
-  //  }
-
-  def throttled[A](fut: => Future[A]): Future[A] = {
-    ???
-  }
-
-
-  private var _characters: Characters = _
-
   object Store {
     def getChars = Storage.local.futGet[Characters](s"$account-characters")
     def setChars(chars: Characters) = Storage.local.futSet(s"$account-characters", chars)
@@ -45,6 +30,11 @@ class PoeCacher(account: String = "UnknownAccount!") {
 
     def getStis(league: League) = Storage.local.futGet[StashTabInfos](s"$account-$league-stis")
     def setStis(league: League, stis: StashTabInfos) = Storage.local.futSet(s"$account-$league-stis", stis)
+
+    def getStashTab(league: League, tabIdx: Int) =
+      Storage.local.futGet[StashTab](s"$account-$league-$tabIdx-stis")
+    def setStashTab(league: League, tabIdx: Int, st: StashTab) =
+      Storage.local.futSet(s"$account-$league-$tabIdx-stis", st)
   }
 
   object Net {
@@ -58,6 +48,10 @@ class PoeCacher(account: String = "UnknownAccount!") {
 
     def getStisAndStore(league: League) = PoeRpcs.getStashTabInfos(league) flatMap {
       stis => Store.setStis(league, stis).map(_ => stis)
+    }
+
+    def getStashTabAndStore(league: League, tabIdx: Int) = PoeRpcs.getStashTab(league, tabIdx) flatMap {
+      stis => Store.setStashTab(league, tabIdx, stis).map(_ => stis)
     }
   }
 
@@ -81,6 +75,13 @@ class PoeCacher(account: String = "UnknownAccount!") {
     Store.getStis(league) flatMap {
       case Some(stis) => JsFuture(stis)
       case None => Net.getStisAndStore(league)
+    }
+  }
+
+  def getStashTab(league: League, tabIdx: Int) : Future[StashTab] = {
+    Store.getStashTab(league, tabIdx) flatMap {
+      case Some(st) => JsFuture(st)
+      case None => Net.getStashTabAndStore(league, tabIdx)
     }
   }
 
