@@ -15,24 +15,28 @@ import scala.util.{Failure, Success}
 //////////////////////////////////////////////////////////////
 
 
-object JsExtensions {
+object JSExtensions {
   implicit class TypeAExtensions[A](val a: A) extends AnyVal {
     def nullSafe: Option[A] = if (a == null || a.isInstanceOf[js.Undefined]) None else Some(a)
   }
 
   implicit class JsAnyExtensions(val a: js.Any) extends AnyVal {
     def toJsonString: js.String = js.JSON.stringify(a)
+    def toJsDic : js.Dictionary = a.asInstanceOf[js.Dictionary]
+    def toJsObj : js.Object = a.asInstanceOf[js.Object]
+    def toJsDyn : js.Dynamic = a.asInstanceOf[js.Dynamic]
+    def toJsStr : js.String = a.asInstanceOf[js.String]
   }
 
   implicit class JsFutureExtensions[A](val f: Future[A]) extends AnyVal {
     def log(prefix: String = null) : Future[A] = {
-      val p = JsPromise[A]()
+      val p = JSPromise[A]()
       f.onComplete {
         case Success(x) =>
-          if (prefix != null) console.log(prefix, x) else console.log(x)
+          if (prefix != null) console.log(prefix, x) else console.log(x+"", x)
           p.success(x)
         case Failure(t) =>
-          if (prefix != null) console.error(prefix, t) else console.error(t)
+          if (prefix != null) console.error(prefix, t) else console.error(t+"", t)
           p.failure(t)
       }
       p.future
@@ -40,8 +44,8 @@ object JsExtensions {
   }
 }
 
-trait JsExtensions {
-  import JsExtensions._
+trait JSExtensions {
+  import JSExtensions._
 
   implicit def typeAExtensions[A](a: A): TypeAExtensions[A] = new TypeAExtensions[A](a)
   implicit def jsAnyExtensions(a: js.Any): JsAnyExtensions = new JsAnyExtensions(a)

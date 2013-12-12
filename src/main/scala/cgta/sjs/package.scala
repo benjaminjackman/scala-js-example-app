@@ -1,6 +1,6 @@
 package cgta
 
-import cgta.sjs.lang.CgtaJsDsl
+import cgta.sjs.lang.SJSDsl
 
 //////////////////////////////////////////////////////////////
 // Copyright (c) 2013 Ben Jackman, Jeff Gomberg
@@ -11,4 +11,4 @@ import cgta.sjs.lang.CgtaJsDsl
 //////////////////////////////////////////////////////////////
 
 
-package object sjs extends CgtaJsDsl
+package object sjs extends SJSDsl

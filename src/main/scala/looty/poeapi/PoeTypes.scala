@@ -17,6 +17,8 @@ object PoeTypes {
 
   type Characters = js.Array[CharacterInfo]
 
+  type StashTabInfos = js.Array[StashTabInfo]
+
   object Leagues extends Enumeration {
     type League = Value
     val Standard   = Value("Standard")
@@ -49,9 +51,13 @@ object PoeTypes {
   }
 
   trait StashTabInfo extends js.Object {
+    //Background color
     val colour: Colour
+    //Index
     val i     : js.Number
+    //Name
     val n     : js.String
+    //Image to use for the tab
     val src   : js.String
   }
 

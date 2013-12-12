@@ -18,26 +18,26 @@ import scala.scalajs.js
 // Created by bjackman @ 12/10/13 1:51 PM
 //////////////////////////////////////////////////////////////
 
-object JsFuture {
+object JSFuture {
 
-  class JsFutureFailure(val reason: Any) extends Exception
+  case class JSFutureFailure(reason: Any) extends Exception
 
   def wrapPromisesAPlus[A](that: js.Dynamic): Future[A] = {
     def wrapAPlusReason(reason: js.Any): Throwable = {
       reason match {
         case reason: Throwable => reason
-        case x => new JsFutureFailure(reason)
+        case x => new JSFutureFailure(reason)
       }
     }
 
-    val p = JsPromise[A]()
+    val p = JSPromise[A]()
     that.`then`((data: js.Any) => p.success(data.asInstanceOf[A]),
       (reason: js.Any) => p.failure(wrapAPlusReason(reason))
     )
     p.future
   }
 
-  val Promise = JsPromise
+  val Promise = JSPromise
 
   object InternalCallbackExecutor extends ExecutionContext {
     def execute(runnable: Runnable): Unit = {
@@ -183,9 +183,9 @@ object JsFuture {
   //a protected factory method
   private[lang] trait Impl[T] extends Future[T] {
 
-    private implicit def internalExecutor: ExecutionContext = JsFuture.InternalCallbackExecutor
+    private implicit def internalExecutor: ExecutionContext = JSFuture.InternalCallbackExecutor
 
-    protected def newPromise[S](): Promise[S] = JsPromise()
+    protected def newPromise[S](): Promise[S] = JSPromise()
     /* Projections */
 
     /** Returns a failed projection of this future.
@@ -466,7 +466,7 @@ object JsFuture {
       */
     override def mapTo[S](implicit tag: ClassTag[S]): Future[S] = {
       def boxedType(c: Class[_]): Class[_] = {
-        if (c.isPrimitive) JsFuture.toBoxed(c) else c
+        if (c.isPrimitive) JSFuture.toBoxed(c) else c
       }
 
       val p = Promise[S]()
@@ -522,7 +522,7 @@ object JsFuture {
 }
 
 
-object JsPromise {
+object JSPromise {
   /** Creates a promise object which can be completed with a value.
     *
     * @tparam T       the type of the value in the promise
@@ -544,7 +544,7 @@ object JsPromise {
     */
   def successful[T](result: T): Promise[T] = new KeptImpl[T](Success(result))
 
-  private[lang] class DefaultImpl[T] extends Promise[T] with Future[T] with JsFuture.Impl[T] {
+  private[lang] class DefaultImpl[T] extends Promise[T] with Future[T] with JSFuture.Impl[T] {
     private var completion = Option.empty[Try[T]]
     private var watchers   = List.empty[Try[T] => Any]
 

@@ -3,7 +3,7 @@ package io
 
 import org.scalajs.jquery.{JQueryAjaxSettings, JQueryStatic}
 import scala.scalajs.js
-import cgta.sjs.lang.{JsFuture, JsPromise}
+import cgta.sjs.lang.{JSFuture, JSPromise}
 import scala.concurrent.Future
 
 //////////////////////////////////////////////////////////////
@@ -27,7 +27,7 @@ object AjaxHelp {
   }
 
   def apply[A](url: String, requestType: HttpRequestTypes.HttpRequestType, data: Option[String]): Future[A] = {
-    JsFuture.wrapPromisesAPlus[A] {
+    JSFuture.wrapPromisesAPlus[A] {
       val req = js.Dictionary(
         "url" -> url,
         "type" -> requestType.toString

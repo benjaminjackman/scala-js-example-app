@@ -1,7 +1,10 @@
-package cgta.sjs.chrome
+package cgta.sjs
+package chrome
 
 import scala.scalajs.js.annotation.JSName
 import scala.scalajs.js
+import scala.concurrent.Future
+import cgta.sjs.lang.JSPromise
 
 
 //////////////////////////////////////////////////////////////
@@ -15,8 +18,36 @@ import scala.scalajs.js
 
 @JSName("chrome.storage")
 object Storage extends js.Object {
+
+
   @JSName("chrome.storage.local")
-  object local extends js.Object {
+  val local: Local = ???
+
+  object Local {
+    implicit class LocalExt(val x: Local) extends AnyVal {
+      def futGet[B](key: js.String): Future[Option[B]] = {
+        val p = JSPromise[Option[B]]()
+        def setPromise(kv: js.Any) {
+          p.success(kv.toJsDic(key).nullSafe.map(_.asInstanceOf[B]))
+        }
+        x.get(key, setPromise _)
+        p.future
+      }
+      def futSet(key: js.String, value : js.Any) : Future[Unit] = {
+        val p = JSPromise[Unit]()
+        def setPromise() {
+          p.success(Unit)
+        }
+        val kv = newObject.toJsDic
+        kv(key) = value
+        x.set(kv, setPromise _)
+        p.future
+      }
+    }
+  }
+
+
+  trait Local extends js.Object {
     val QUOTA_BYTES: js.Number = ???
     def clear() = ???
     def clear(cb: js.Function1[js.Any, Unit]) = ???
@@ -31,10 +62,10 @@ object Storage extends js.Object {
     //    def get(keys: js.Array[js.String], cb: js.Dynamic => Unit) = ???
 
     def get(keys: js.Any) = ???
-    def get[B <: js.Any](keys: js.Any, cb: js.Function1[B, Unit]) = ???
+    def get(keys: js.Any, cb: js.Function1[js.Any, Unit]) = ???
 
     def remove(keys: js.Any, cb: js.Function0[Unit]) = ???
-
   }
+
 
 }

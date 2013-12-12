@@ -3,7 +3,9 @@ package looty
 import looty.poeapi.PoeRpcs
 import cgta.sjs.chrome.Storage
 import scala.concurrent.Future
-import looty.poeapi.PoeTypes.Characters
+import looty.poeapi.PoeTypes.{StashTabInfos, StashTabInfo, Inventory, Characters}
+import cgta.sjs.lang.JSFuture
+import looty.poeapi.PoeTypes.Leagues.League
 
 
 //////////////////////////////////////////////////////////////
@@ -17,44 +19,74 @@ import looty.poeapi.PoeTypes.Characters
 /**
  * This class will cache the data from the website in localstorage
  */
-class PoeCacher(account : String = "UnknownAccount!") {
+class PoeCacher(account: String = "UnknownAccount!") {
 
 
-  private var _characters : Characters = _
+  //Used for net calls since GGG throttles the requests we can make per period
+  //When we received a 'you are requesting too quickly failure from them
+  //we will start throttling
+  //  def throttleOnFailure[A](fut :  => Future[A]) : Future[A] = {
+  //    val retryMs = 10000
+  //  }
 
-  def init(): Future[Unit] = {
-    //Will init data from local storage
-    Storage.local.get("characterData", (data : Characters) => {
-
-    })
-
-  }
-  def basicRefresh(): Future[Unit] = {
-    ???
-  }
-  def clear(): Future[Unit] = {
-    ???
-  }
-  def fullRefresh(): Future[Unit] = {
+  def throttled[A](fut: => Future[A]): Future[A] = {
     ???
   }
 
 
-//  def storeCharacterData(): Future[Unit] = {
-//    PoeRpcs.getCharacters().flatMap { data =>
-//      val cd = newObject
-//      cd.characterData = data
-//      console.log("Storing!")
-//      decant0(Storage.local.set(cd, _))
-//    }
-//  }
-//
-//  def storeCharacterInventories(): Future[Unit] = {
-//    //TODO Convert to toFuture style
-//    decant1(Storage.local.get[Characters]("characterData", (c: Characters) => {})).log().flatMap { data =>
-//
-//    }
-//  }
+  private var _characters: Characters = _
+
+  object Store {
+    def getChars = Storage.local.futGet[Characters](s"$account-characters")
+    def setChars(chars: Characters) = Storage.local.futSet(s"$account-characters", chars)
+
+    def getInv(char: String) = Storage.local.futGet[Inventory](s"$account-$char-inventory")
+    def setInv(char: String, inv: Inventory) = Storage.local.futSet(s"$account-$char-inventory", inv)
+
+    def getStis(league: League) = Storage.local.futGet[StashTabInfos](s"$account-$league-stis")
+    def setStis(league: League, stis: StashTabInfos) = Storage.local.futSet(s"$account-$league-stis", stis)
+  }
+
+  object Net {
+    def getCharsAndStore = PoeRpcs.getCharacters() flatMap {
+      chars => Store.setChars(chars).map(_ => chars)
+    }
+
+    def getInvAndStore(char: String) = PoeRpcs.getCharacterInventory(char) flatMap {
+      inv => Store.setInv(char, inv).map(_ => inv)
+    }
+
+    def getStisAndStore(league: League) = PoeRpcs.getStashTabInfos(league) flatMap {
+      stis => Store.setStis(league, stis).map(_ => stis)
+    }
+  }
+
+
+  def getChars(): Future[Characters] = {
+    //Attempt to get get the chars from local storage, or else go out to the network and load
+    Store.getChars flatMap {
+      case Some(chars) => JSFuture(chars)
+      case None => Net.getCharsAndStore
+    }
+  }
+
+  def getInv(char: String): Future[Inventory] = {
+    Store.getInv(char) flatMap {
+      case Some(inv) => JSFuture(inv)
+      case None => Net.getInvAndStore(char)
+    }
+  }
+
+  def getStashInfo(league: League): Future[StashTabInfos] = {
+    Store.getStis(league) flatMap {
+      case Some(stis) => JSFuture(stis)
+      case None => Net.getStisAndStore(league)
+    }
+  }
+
+  def basicRefresh() {
+
+  }
 
 
 }
