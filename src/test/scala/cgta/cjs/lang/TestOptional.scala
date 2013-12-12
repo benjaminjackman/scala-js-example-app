@@ -1,4 +1,4 @@
-package cgta.sjs
+package cgta.cjs
 package lang
 
 import scala.scalajs.js
@@ -9,11 +9,23 @@ import scala.scalajs.js
 // All Rights Reserved
 // please contact ben@jackman.biz or jeff@cgtanalytics.com
 // for licensing inquiries
-// Created by bjackman @ 12/11/13 12:17 AM
+// Created by bjackman @ 12/12/13 6:52 AM
 //////////////////////////////////////////////////////////////
 
 
-trait JSConsole extends js.Object {
-  def log(xs : Any*)
-  def error(xs : Any*)
+class TestOptional {
+  def test(name : String)(b  : => Unit) {
+    //TODO Implement this
+  }
+
+  class JsSettings extends js.Object {
+    var x: Optional[Int] = ???
+
+  }
+
+  test("Optional should ") {
+    val y = new JsSettings(5)
+    y.x = 6
+  }
+
 }

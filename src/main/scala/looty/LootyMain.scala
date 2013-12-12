@@ -1,7 +1,7 @@
 package looty
 
-import looty.poeapi.PoeRpcs
-import looty.poeapi.PoeTypes.Leagues
+import scala.scalajs.js
+import cgta.cjs.lang.Optional
 
 
 //////////////////////////////////////////////////////////////
@@ -14,6 +14,13 @@ import looty.poeapi.PoeTypes.Leagues
 
 
 object LootyMain {
+
+  class JsSettings extends js.Object {
+        var x: Optional[js.Number] = ???
+
+      }
+
+
 
   def main(args: Array[String]) {
     console.log("Hello World! Looty Main!")
@@ -34,9 +41,14 @@ object LootyMain {
 //    PoeRpcs.getStashTabInfos(Leagues.Standard).log()
 
 //    PoeRpcs.get(url = "http://www.pathofexile.com/character-window/get-items", params = s).log()
-    (0 to 100).foreach { i =>
-      PoeRpcs.getStashTab(Leagues.Standard, i).log()
-    }
+//    (0 to 100).foreach { i =>
+//      PoeRpcs.getStashTab(Leagues.Standard, i).log()
+//    }
+
+
+      val y = js.Object().asInstanceOf[JsSettings]
+      y.x = 6 : js.Number //extra typing needed here to double implicit conversion
+      console.log(y.x.get) //prints 6
 
 
 //    PoeRpcs.getCharacters().log("CI")

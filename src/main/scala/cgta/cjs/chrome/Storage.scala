@@ -1,10 +1,10 @@
-package cgta.sjs
+package cgta.cjs
 package chrome
 
 import scala.scalajs.js.annotation.JSName
 import scala.scalajs.js
 import scala.concurrent.Future
-import cgta.sjs.lang.JSPromise
+import cgta.cjs.lang.JsPromise
 
 
 //////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@ object Storage extends js.Object {
   object Local {
     implicit class LocalExt(val x: Local) extends AnyVal {
       def futGet[B](key: js.String): Future[Option[B]] = {
-        val p = JSPromise[Option[B]]()
+        val p = JsPromise[Option[B]]()
         def setPromise(kv: js.Any) {
           p.success(kv.toJsDic(key).nullSafe.map(_.asInstanceOf[B]))
         }
@@ -34,7 +34,7 @@ object Storage extends js.Object {
         p.future
       }
       def futSet(key: js.String, value : js.Any) : Future[Unit] = {
-        val p = JSPromise[Unit]()
+        val p = JsPromise[Unit]()
         def setPromise() {
           p.success(Unit)
         }

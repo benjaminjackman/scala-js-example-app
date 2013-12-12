@@ -1,4 +1,4 @@
-package cgta.sjs
+package cgta.cjs
 package lang
 
 import scala.scalajs.js
@@ -15,7 +15,7 @@ import scala.util.{Failure, Success}
 //////////////////////////////////////////////////////////////
 
 
-object JSExtensions {
+object JsExtensions {
   implicit class TypeAExtensions[A](val a: A) extends AnyVal {
     def nullSafe: Option[A] = if (a == null || a.isInstanceOf[js.Undefined]) None else Some(a)
   }
@@ -30,7 +30,7 @@ object JSExtensions {
 
   implicit class JsFutureExtensions[A](val f: Future[A]) extends AnyVal {
     def log(prefix: String = null) : Future[A] = {
-      val p = JSPromise[A]()
+      val p = JsPromise[A]()
       f.onComplete {
         case Success(x) =>
           if (prefix != null) console.log(prefix, x) else console.log(x+"", x)
@@ -44,8 +44,8 @@ object JSExtensions {
   }
 }
 
-trait JSExtensions {
-  import JSExtensions._
+trait JsExtensions {
+  import JsExtensions._
 
   implicit def typeAExtensions[A](a: A): TypeAExtensions[A] = new TypeAExtensions[A](a)
   implicit def jsAnyExtensions(a: js.Any): JsAnyExtensions = new JsAnyExtensions(a)

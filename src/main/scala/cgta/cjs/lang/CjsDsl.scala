@@ -1,9 +1,8 @@
-package cgta.sjs
+package cgta.cjs
 package lang
 
 import scala.scalajs.js
 import scala.concurrent.Future
-import scala.scalajs.js.annotation.JSName
 
 
 //////////////////////////////////////////////////////////////
@@ -16,7 +15,7 @@ import scala.scalajs.js.annotation.JSName
 
 
 
-trait SJSDsl extends JSExtensions {
+trait CjsDsl extends JsExtensions {
 
   def global = js.Dynamic.global
   def console = global.console.asInstanceOf[JSConsole]
@@ -29,7 +28,7 @@ trait SJSDsl extends JSExtensions {
   //el.on("click", (x) => console.log(x))
   //decant(el.on("click", _)).onSuccess(console.log(_))
   def decant1[A](cb0 : ((A) => Unit) => Unit) : Future[A] = {
-    val p = JSPromise[A]()
+    val p = JsPromise[A]()
     def cb(a : A) {
       p.success(a)
     }
@@ -37,7 +36,7 @@ trait SJSDsl extends JSExtensions {
     p.future
   }
   def decant0(cb0 : (() => Unit) => Unit) : Future[Unit] = {
-    val p = JSPromise[Unit]()
+    val p = JsPromise[Unit]()
     def cb() {
       p.success(Unit)
     }
@@ -46,6 +45,6 @@ trait SJSDsl extends JSExtensions {
   }
 
 
-  implicit val jsExecutionContext = JSFuture.InternalCallbackExecutor
+  implicit val jsExecutionContext = JsFuture.InternalCallbackExecutor
 
 }

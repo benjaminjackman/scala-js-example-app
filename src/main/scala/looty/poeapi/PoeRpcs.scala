@@ -6,8 +6,8 @@ import org.scalajs.jquery.JQueryStatic
 import scala.concurrent.Future
 import looty.poeapi.PoeTypes.Leagues.League
 import scala.collection.immutable
-import cgta.sjs.lang.{JSFuture, JSPromise}
-import cgta.sjs.io.AjaxHelp
+import cgta.cjs.lang.{JsFuture, JsPromise}
+import cgta.cjs.io.AjaxHelp
 import scala.util.{Failure, Success}
 
 
@@ -70,13 +70,13 @@ object PoeRpcs {
       res match {
         case x: js.Boolean =>
           //GGG sends back "false" when the parameters aren't valid
-          JSFuture.failed(BadParameters())
+          JsFuture.failed(BadParameters())
         case res => res.asInstanceOf[js.Dynamic].error.nullSafe match {
           case Some(reason) =>
             //Typically this is a throttle was tripped failure
-            JSFuture.failed(ThrottledFailure(reason.toString))
+            JsFuture.failed(ThrottledFailure(reason.toString))
           //Therefore we schedule a re-attempt in the future
-          case None => JSFuture(res.asInstanceOf[A])
+          case None => JsFuture(res.asInstanceOf[A])
         }
       }
     }
@@ -111,7 +111,7 @@ object PoeRpcs {
   }
 
   private case class QueueItem[A](url: String, params: js.Any) {
-    val promise = JSPromise()
+    val promise = JsPromise()
   }
 
   private var requestQueue   = immutable.Queue.empty[QueueItem[_]]

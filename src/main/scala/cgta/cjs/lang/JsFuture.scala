@@ -1,13 +1,12 @@
-package cgta.sjs
+package cgta.cjs
 package lang
 
+import scala.scalajs.js
+import scala.concurrent.{Promise, ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
-import scala.concurrent.duration.Duration
 import scala.collection.generic.CanBuildFrom
-import scala.concurrent.{ExecutionContext, CanAwait, Promise, Future}
 import scala.util.control.NonFatal
 import scala.reflect.ClassTag
-import scala.scalajs.js
 
 
 //////////////////////////////////////////////////////////////
@@ -15,29 +14,31 @@ import scala.scalajs.js
 // All Rights Reserved
 // please contact ben@jackman.biz or jeff@cgtanalytics.com
 // for licensing inquiries
-// Created by bjackman @ 12/10/13 1:51 PM
+// Created by bjackman @ 12/12/13 6:48 AM
 //////////////////////////////////////////////////////////////
 
-object JSFuture {
 
-  case class JSFutureFailure(reason: Any) extends Exception
+
+object JsFuture {
+
+  case class JsFutureFailure(reason: Any) extends Exception
 
   def wrapPromisesAPlus[A](that: js.Dynamic): Future[A] = {
     def wrapAPlusReason(reason: js.Any): Throwable = {
       reason match {
         case reason: Throwable => reason
-        case x => new JSFutureFailure(reason)
+        case x => new JsFutureFailure(reason)
       }
     }
 
-    val p = JSPromise[A]()
+    val p = JsPromise[A]()
     that.`then`((data: js.Any) => p.success(data.asInstanceOf[A]),
       (reason: js.Any) => p.failure(wrapAPlusReason(reason))
     )
     p.future
   }
 
-  val Promise = JSPromise
+  val Promise = JsPromise
 
   object InternalCallbackExecutor extends ExecutionContext {
     def execute(runnable: Runnable): Unit = {
@@ -183,9 +184,9 @@ object JSFuture {
   //a protected factory method
   private[lang] trait Impl[T] extends Future[T] {
 
-    private implicit def internalExecutor: ExecutionContext = JSFuture.InternalCallbackExecutor
+    private implicit def internalExecutor: ExecutionContext = JsFuture.InternalCallbackExecutor
 
-    protected def newPromise[S](): Promise[S] = JSPromise()
+    protected def newPromise[S](): Promise[S] = JsPromise()
     /* Projections */
 
     /** Returns a failed projection of this future.
@@ -466,7 +467,7 @@ object JSFuture {
       */
     override def mapTo[S](implicit tag: ClassTag[S]): Future[S] = {
       def boxedType(c: Class[_]): Class[_] = {
-        if (c.isPrimitive) JSFuture.toBoxed(c) else c
+        if (c.isPrimitive) JsFuture.toBoxed(c) else c
       }
 
       val p = Promise[S]()
@@ -517,80 +518,6 @@ object JSFuture {
       p.future
     }
 
-  }
-
-}
-
-
-object JSPromise {
-  /** Creates a promise object which can be completed with a value.
-    *
-    * @tparam T       the type of the value in the promise
-    * @return         the newly created `Promise` object
-    */
-  def apply[T](): Promise[T] = new DefaultImpl[T]()
-
-  /** Creates an already completed Promise with the specified exception.
-    *
-    * @tparam T       the type of the value in the promise
-    * @return         the newly created `Promise` object
-    */
-  def failed[T](exception: Throwable): Promise[T] = new KeptImpl[T](Failure(exception))
-
-  /** Creates an already completed Promise with the specified result.
-    *
-    * @tparam T       the type of the value in the promise
-    * @return         the newly created `Promise` object
-    */
-  def successful[T](result: T): Promise[T] = new KeptImpl[T](Success(result))
-
-  private[lang] class DefaultImpl[T] extends Promise[T] with Future[T] with JSFuture.Impl[T] {
-    private var completion = Option.empty[Try[T]]
-    private var watchers   = List.empty[Try[T] => Any]
-
-    override def future: Future[T] = this
-
-    override def tryComplete(result: Try[T]): Boolean = {
-      completion match {
-        case Some(_) => false
-        case None => {
-          completion = Some(result)
-          watchers.reverse.foreach { wf =>
-            global.setTimeout({ () =>
-              wf(result)
-            }, 0)
-          }
-          watchers = Nil
-          true
-        }
-      }
-    }
-
-    override def onComplete[U](func: (Try[T]) => U)(implicit executor: ExecutionContext): Unit = {
-      value match {
-        case Some(value) => func(value)
-        case None => watchers ::= func
-      }
-    }
-
-    override def isCompleted: Boolean = completion.isDefined
-    override def value: Option[Try[T]] = completion
-
-    def ready(atMost: Duration)(implicit permit: CanAwait): this.type = ???
-    def result(atMost: Duration)(implicit permit: CanAwait): T = ???
-  }
-
-  private[lang] class KeptImpl[T](private val result: Try[T]) extends Promise[T] with Future[T] {
-    override def future: Future[T] = this
-    override def tryComplete(result: Try[T]): Boolean = false
-    override def onComplete[U](func: (Try[T]) => U)(implicit executor: ExecutionContext): Unit = {
-      func(result)
-    }
-    override def isCompleted: Boolean = true
-    override def value: Option[Try[T]] = Some(result)
-
-    def ready(atMost: Duration)(implicit permit: CanAwait): this.type = ???
-    def result(atMost: Duration)(implicit permit: CanAwait): T = ???
   }
 
 }

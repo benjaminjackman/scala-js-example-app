@@ -1,7 +1,8 @@
-package looty.poeapi
+package looty
+package poeapi
 
 import scala.scalajs.js
-import cgta.sjs.lang.Nullable
+import cgta.cjs.lang.Optional
 
 
 //////////////////////////////////////////////////////////////
@@ -36,7 +37,7 @@ object PoeTypes {
   }
 
   trait Inventory extends js.Object {
-    val error    : Nullable[js.String]
+    val error    : Optional[js.String]
     val character: js.String
     val items    : js.Array[AnyItem]
   }
@@ -46,8 +47,8 @@ object PoeTypes {
     val items  : js.Array[AnyItem]
 
     //Returned optionally when tabs = 1 is set
-    val tabs   : Nullable[js.Array[StashTabInfo]]
-    val error  : Nullable[js.String]
+    val tabs   : Optional[js.Array[StashTabInfo]]
+    val error  : Optional[js.String]
   }
 
   trait StashTabInfo extends js.Object {
@@ -83,9 +84,9 @@ object PoeTypes {
     val identified   : js.Boolean
     val properties   : js.Array[ItemProperty]
     val requirements : js.Array[ItemRequirement]
-    val descrText    : Nullable[js.String]
-    val secDescrText : Nullable[js.String]
-    val explicitMods : Nullable[js.Array[js.String]]
+    val descrText    : Optional[js.String]
+    val secDescrText : Optional[js.String]
+    val explicitMods : Optional[js.Array[js.String]]
     val frameType    : js.Number
     val socketedItems: js.Array[AnyItem]
 
@@ -96,8 +97,8 @@ object PoeTypes {
     val inventoryId: js.String
 
     //For items that are socketed in other items
-    val socket: Nullable[js.Number]
-    val colour: Nullable[js.String]
+    val socket: Optional[js.Number]
+    val colour: Optional[js.String]
 
   }
 
@@ -114,7 +115,7 @@ object PoeTypes {
   }
 
   trait ItemRequirement extends js.Object {
-    val name       : Nullable[js.String]
+    val name       : Optional[js.String]
     val values     : js.Array[js.Array[js.Array[js.String]]]
     val displayMode: js.Number
   }

@@ -1,10 +1,10 @@
 package looty
 
 import looty.poeapi.PoeRpcs
-import cgta.sjs.chrome.Storage
+import cgta.cjs.chrome.Storage
 import scala.concurrent.Future
 import looty.poeapi.PoeTypes.{StashTabInfos, StashTabInfo, Inventory, Characters}
-import cgta.sjs.lang.JSFuture
+import cgta.cjs.lang.JsFuture
 import looty.poeapi.PoeTypes.Leagues.League
 
 
@@ -65,21 +65,21 @@ class PoeCacher(account: String = "UnknownAccount!") {
   def getChars(): Future[Characters] = {
     //Attempt to get get the chars from local storage, or else go out to the network and load
     Store.getChars flatMap {
-      case Some(chars) => JSFuture(chars)
+      case Some(chars) => JsFuture(chars)
       case None => Net.getCharsAndStore
     }
   }
 
   def getInv(char: String): Future[Inventory] = {
     Store.getInv(char) flatMap {
-      case Some(inv) => JSFuture(inv)
+      case Some(inv) => JsFuture(inv)
       case None => Net.getInvAndStore(char)
     }
   }
 
   def getStashInfo(league: League): Future[StashTabInfos] = {
     Store.getStis(league) flatMap {
-      case Some(stis) => JSFuture(stis)
+      case Some(stis) => JsFuture(stis)
       case None => Net.getStisAndStore(league)
     }
   }

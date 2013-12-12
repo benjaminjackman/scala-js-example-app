@@ -79,7 +79,7 @@ code
 
 ##  Decant a helper for converting callbacks to futures
 I made a simple function that can convert basic structures to futures very easily
-it's in /src/main/scala/cgta/sjs/lang/SJSDsl.scala
+it's in /src/main/scala/cgta/sjs/lang/CjsDsl.scala
     //Converts a callback style into a future
     //el.on("click", (x) => console.log(x))
     //decant(el.on("click", _)).onSuccess(console.log(_))
