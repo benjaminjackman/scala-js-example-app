@@ -3,11 +3,7 @@ package lang
 
 import scala.util.{Failure, Success, Try}
 import scala.concurrent.duration.Duration
-import scala.collection.generic.CanBuildFrom
 import scala.concurrent.{ExecutionContext, CanAwait, Promise, Future}
-import scala.util.control.NonFatal
-import scala.reflect.ClassTag
-import scala.scalajs.js
 
 
 //////////////////////////////////////////////////////////////
@@ -79,7 +75,7 @@ object JsPromise {
     def result(atMost: Duration)(implicit permit: CanAwait): T = ???
   }
 
-  private[lang] class KeptImpl[T](private val result: Try[T]) extends Promise[T] with Future[T] {
+  private[lang] class KeptImpl[T](private val result: Try[T]) extends Promise[T] with JsFuture.Impl[T] {
     override def future: Future[T] = this
     override def tryComplete(result: Try[T]): Boolean = false
     override def onComplete[U](func: (Try[T]) => U)(implicit executor: ExecutionContext): Unit = {

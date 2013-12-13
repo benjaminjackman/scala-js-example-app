@@ -4,7 +4,6 @@ package poeapi
 import scala.scalajs.js
 import org.scalajs.jquery.JQueryStatic
 import scala.concurrent.Future
-import looty.poeapi.PoeTypes.Leagues.League
 import scala.collection.immutable
 import cgta.cjs.lang.{JsFuture, JsPromise}
 import cgta.cjs.io.AjaxHelp
@@ -34,7 +33,7 @@ object PoeRpcs {
     enqueue[Inventory](url = "http://www.pathofexile.com/character-window/get-items", params = p)
   }
 
-  def getStashTab(league: League, tabIdx: Int): Future[StashTab] = {
+  def getStashTab(league: String, tabIdx: Int): Future[StashTab] = {
     val p = newObject
     p.league = league.toString
     p.tabIndex = tabIdx
@@ -42,7 +41,7 @@ object PoeRpcs {
     enqueue[StashTab](url = "http://www.pathofexile.com/character-window/get-stash-items", params = p)
   }
 
-  def getStashTabInfos(league: League): Future[StashTabInfos] = {
+  def getStashTabInfos(league: String): Future[StashTabInfos] = {
     val p = newObject
     p.league = league.toString
     p.tabIndex = 0
@@ -70,7 +69,7 @@ object PoeRpcs {
       res match {
         case x: js.Boolean =>
           //GGG sends back "false" when the parameters aren't valid
-          JsFuture.failed(BadParameters())
+          JsFuture.failed(BadParameters(s"called $url with ${JSON.stringify(params)}"))
         case res => res.asInstanceOf[js.Dynamic].error.nullSafe match {
           case Some(reason) =>
             //Typically this is a throttle was tripped failure
@@ -119,7 +118,7 @@ object PoeRpcs {
   //How long to wait after we hit the throttle before checking again
   val coolOffMs = 10000
 
-  case class BadParameters() extends Exception
+  case class BadParameters(msg : String) extends Exception
   case class ThrottledFailure(msg: String) extends Exception
 
 

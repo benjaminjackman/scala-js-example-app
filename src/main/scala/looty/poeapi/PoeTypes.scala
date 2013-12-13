@@ -20,12 +20,14 @@ object PoeTypes {
 
   type StashTabInfos = js.Array[StashTabInfo]
 
-  object Leagues extends Enumeration {
-    type League = Value
-    val Standard   = Value("Standard")
-    val Domination = Value("Domination")
-    val Hardcore   = Value("Hardcore")
-    val Nemesis    = Value("Nemesis")
+  object Leagues {
+
+    val Standard   = "Standard"
+    val Domination = "Domination"
+    val Hardcore   = "Hardcore"
+    val Nemesis    = "Nemesis"
+
+    val all = List(Standard, Domination, Hardcore, Nemesis)
   }
 
   trait CharacterInfo extends js.Object {
@@ -47,8 +49,8 @@ object PoeTypes {
     val items  : js.Array[AnyItem]
 
     //Returned optionally when tabs = 1 is set
-    val tabs   : Optional[js.Array[StashTabInfo]]
-    val error  : Optional[js.String]
+    val tabs : Optional[js.Array[StashTabInfo]]
+    val error: Optional[js.String]
   }
 
   trait StashTabInfo extends js.Object {

@@ -1,7 +1,7 @@
 package looty
 
 import scala.scalajs.js
-import cgta.cjs.lang.Optional
+import looty.data.{PoeItemParser, PoeCacher}
 
 
 //////////////////////////////////////////////////////////////
@@ -12,28 +12,23 @@ import cgta.cjs.lang.Optional
 // Created by bjackman @ 12/9/13 11:22 PM
 //////////////////////////////////////////////////////////////
 
+class Point(x: js.Number, y: js.Number) extends js.Object
 
 object LootyMain {
-
-  class JsSettings extends js.Object {
-        var x: Optional[js.Number] = ???
-
-      }
-
 
 
   def main(args: Array[String]) {
     console.log("Hello World! Looty Main!")
 
-      val y = js.Object().asInstanceOf[JsSettings]
-      y.x = 6 : js.Number //extra typing needed here to double implicit conversion
-      console.log(y.x.get) //prints 6
+    val pc = new PoeCacher()
+    for {
+      tabs <- pc.getAllStashTabs("Standard")
+      tab <- tabs
+      item <- tab.items
+    } {
+      PoeItemParser.parseItem(item)
+    }
 
-
-//    PoeRpcs.getCharacters().log("CI")
-//    PoeRpcs.getStashTab(league = Leagues.Standard.toString, tabIdx = 0).onComplete(x => console.log("ST", x))
-//    PoeRpcs.getStashTabInfo(league = Leagues.Standard.toString).onComplete(x => console.log("SI", x))
-//    PoeRpcs.getCharacterInventory(character = "BAM__SLAM").onComplete(x => console.log("CI", x))
   }
 
 }
