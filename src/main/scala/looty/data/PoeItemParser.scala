@@ -3,7 +3,6 @@ package data
 
 import looty.poeapi.PoeTypes.AnyItem
 import scala.scalajs.js
-import looty.data.PoeAffixesParsers.AffixParser
 
 
 //////////////////////////////////////////////////////////////
@@ -14,9 +13,6 @@ import looty.data.PoeAffixesParsers.AffixParser
 // Created by bjackman @ 12/13/13 1:52 AM
 //////////////////////////////////////////////////////////////
 
-class ComputedItem(baseItem: AnyItem) {
-
-}
 
 
 object PoeItemParser {
@@ -44,6 +40,6 @@ object PoeItemParser {
       }
     }
     if (parsed) parseCnt += 1 else failCnt += 1
-    if (!parsed) console.log(mod)
+    if (!parsed) console.log(item.name, item.typeLine, mod) else console.log("#########", mod)
   }
 }

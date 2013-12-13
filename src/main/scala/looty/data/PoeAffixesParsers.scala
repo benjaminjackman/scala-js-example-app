@@ -2,6 +2,7 @@ package looty
 package data
 
 import scala.scalajs.js
+import looty.poeapi.PoeTypes.AnyItem
 
 
 //////////////////////////////////////////////////////////////
@@ -13,32 +14,56 @@ import scala.scalajs.js
 //////////////////////////////////////////////////////////////
 
 
+case class MinMaxDamage[A](var min: Double, var max: Double) {
+}
+
+class ComputedItem(val baseItem: AnyItem) extends {
+  var increasedPhysicalDamage = 0.0
+  def physicalDamages = MinMaxDamage(0, 0)
+  def physicalDps = attacksPerSecond * increasedPhysicalDamage * (physicalDamages.min + physicalDamages.max) / 2.0
+
+  def attacksPerSecond: Double = ???
+
+}
+
+case class Expectation(mod: String, expects: (ComputedItem => Any, Any)*)
+
+
 object PoeAffixesParsers {
   private var _all = new js.Array[AffixParser]()
 
   trait AffixParser {
-    def parse(s : js.String, i : ComputedItem) : Boolean
+    def parse(s: js.String, i: ComputedItem): Boolean
   }
 
-  def register(affix : AffixParser) {
+  def register(affix: AffixParser) {
     _all.push(affix)
   }
 
 
-
-  class Increased(style : String) extends AffixParser {
+  abstract class Increased(style: String) extends AffixParser {
     lazy val regex = new js.RegExp(s"^([.+-\\d]+)%* increased $style")
-    def parse(s : js.String, i : ComputedItem) : Boolean = {
+    def parse(s: js.String, i: ComputedItem): Boolean = {
       s.`match`(regex).nullSafe.getOrElse(js.Array()).toList match {
         case null => false
-        case x::y::zs => true
+        case x :: y :: zs =>
+          process(x.toString.toDouble, i)
+          true
         case xs => false
       }
     }
+    def process(x: Double, i: ComputedItem)
   }
+
   //20% increased Physical Damage
-  object IncreasedPhysicalDamage extends Increased("Physical Damage")
+  //[] => ComputedItem.increasedPhysicalDamage == 8
+  object IncreasedPhysicalDamage extends Increased("Physical Damage") {
+    def expected = Expectation("8% increased Physical Damage", (_.increasedPhysicalDamage, 8))
+    override def process(x: Double, i: ComputedItem) { i.increasedPhysicalDamage += x }
+  }
   register(IncreasedPhysicalDamage)
+
+  object Increased
 
 
   val all = _all.toList
