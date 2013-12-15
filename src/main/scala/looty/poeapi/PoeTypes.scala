@@ -70,6 +70,35 @@ object PoeTypes {
     val b: js.Number
   }
 
+  object AnyItem {
+    case class FrameType(id: Int, name: String)
+    object FrameTypes {
+      val unknown  = FrameType(-1, "unknown")
+      val normal   = FrameType(0, "normal")
+      val magic    = FrameType(1, "magic")
+      val rare     = FrameType(2, "rare")
+      val unique   = FrameType(3, "unique")
+      val gem      = FrameType(4, "gem")
+      val currency = FrameType(5, "currency")
+
+      val all = List(normal, magic, rare, unique, gem, currency)
+    }
+
+    implicit class AnyItemExtensions(val x: AnyItem) extends AnyVal {
+      def isGem = x.getFrameType == FrameTypes.gem
+      def isCurrency = x.getFrameType == FrameTypes.currency
+
+      def getFrameType = {
+        val ft = x.frameType.toInt
+        if (ft >= FrameTypes.all.size) {
+          console.error("Unknown frame type", ft, x)
+          FrameTypes.unknown
+        } else {
+          FrameTypes.all(ft)
+        }
+      }
+    }
+  }
 
   trait AnyItem extends js.Object {
     val verified     : js.Boolean

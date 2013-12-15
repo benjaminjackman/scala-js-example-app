@@ -1,5 +1,5 @@
 package looty
-package data
+package model
 
 import looty.poeapi.PoeRpcs
 import cgta.cjs.chrome.Storage

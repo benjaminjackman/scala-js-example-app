@@ -106,6 +106,10 @@ its name do this
     xs.asInstanceOf[js.Dictionary]
     xs("somefield") // becomes xs["somefield"] in js
 
+# Bugs #
+console.log("hi".capitalize)
+Uncaught TypeError: Object hi has no method 'toCharArray'
+(that is a java method, needs to be added)S
 
 # Suggestions #
 

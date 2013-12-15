@@ -1,7 +1,7 @@
 package looty
 
 import scala.scalajs.js
-import looty.data.{PoeItemParser, PoeCacher}
+import looty.model.{PoeItemParser, PoeCacher}
 
 
 //////////////////////////////////////////////////////////////
@@ -19,6 +19,8 @@ object LootyMain {
 
   def main(args: Array[String]) {
     console.log("Hello World! Looty Main!")
+
+    console.log("hi".cap)
 
     val pc = new PoeCacher()
     for {

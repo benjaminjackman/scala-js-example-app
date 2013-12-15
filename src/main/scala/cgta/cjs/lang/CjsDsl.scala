@@ -14,7 +14,6 @@ import scala.concurrent.Future
 //////////////////////////////////////////////////////////////
 
 
-
 trait CjsDsl extends JsExtensions {
 
   def global = js.Dynamic.global
@@ -22,20 +21,18 @@ trait CjsDsl extends JsExtensions {
   def JSON = global.JSON
   def newObject = js.Object().asInstanceOf[js.Dynamic]
 
-
-
   //Converts a callback style into a future
   //el.on("click", (x) => console.log(x))
   //decant(el.on("click", _)).onSuccess(console.log(_))
-  def decant1[A](cb0 : ((A) => Unit) => Unit) : Future[A] = {
+  def decant1[A](cb0: ((A) => Unit) => Unit): Future[A] = {
     val p = JsPromise[A]()
-    def cb(a : A) {
+    def cb(a: A) {
       p.success(a)
     }
     cb0(cb)
     p.future
   }
-  def decant0(cb0 : (() => Unit) => Unit) : Future[Unit] = {
+  def decant0(cb0: (() => Unit) => Unit): Future[Unit] = {
     val p = JsPromise[Unit]()
     def cb() {
       p.success(Unit)
