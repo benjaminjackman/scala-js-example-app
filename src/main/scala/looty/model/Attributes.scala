@@ -61,6 +61,8 @@ class MutableAttributes[A] extends Attributes[A] with StringAccess[A] {
   def dexterity_=(a: A) = _dexterity = a
   def intelligence_=(a: A) = _intelligence = a
 
+  def all = Attributes.all.map(this(_))
+
   def update(name: String, value: A) = name match {
     case Attributes.strength => _strength = value
     case Attributes.dexterity => _dexterity = value

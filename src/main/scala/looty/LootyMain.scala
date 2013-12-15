@@ -1,7 +1,8 @@
 package looty
 
 import scala.scalajs.js
-import looty.model.{PoeItemParser, PoeCacher}
+import looty.model.{ComputedItem, PoeItemParser, PoeCacher}
+import cgta.cjs.lang.JsPromise
 
 
 //////////////////////////////////////////////////////////////
@@ -21,15 +22,27 @@ object LootyMain {
     console.log("Hello World! Looty Main!")
 
     console.log("hi".cap)
+    val items = new js.Array[ComputedItem]()
 
     val pc = new PoeCacher()
-    for {
+
+    val parseFuture = for {
       tabs <- pc.getAllStashTabs("Standard")
-      tab <- tabs
-      item <- tab.items
-    } {
-      PoeItemParser.parseItem(item)
+    } yield {
+      for {
+        tab <- tabs
+        item <- tab.items
+      } {
+        items.push(PoeItemParser.parseItem(item))
+      }
     }
+
+    parseFuture.onComplete {
+      (x) =>
+        console.log("Done parsing items", items)
+        console.log(items.toList.map(_.maxLinks).toArray)
+    }
+
 
   }
 

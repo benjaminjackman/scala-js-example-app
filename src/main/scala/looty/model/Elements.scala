@@ -49,6 +49,8 @@ trait Elements[A] {
   def lightning: A
   def chaos: A
 
+  def all = Elements.all.map(this(_))
+
   def apply(name: String): A = name match {
     case Elements.physical => physical
     case Elements.fire => fire
@@ -77,6 +79,7 @@ class MutableElements[A] extends Elements[A] with StringAccess[A] {
   def cold_=(a: A) = _cold = a
   def lightning_=(a: A) = _lightning = a
   def chaos_=(a: A) = _chaos = a
+
 
   def update(name: String, value: A) = name match {
     case Elements.physical => _physical = value

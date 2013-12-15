@@ -95,21 +95,21 @@ object PoeAffixesParsers {
   }
 
 
-  def increased(name: js.String)(f: (ComputedItem, Double) => Unit) { regex1(s"^([.+-\\d]+)%* increased $name")(f) }
-  def reduced(name: js.String)(f: (ComputedItem, Double) => Unit) { regex1(s"^([.+-\\d]+)%* reduced $name")(f) }
-  def plusTo(name: js.String)(f: (ComputedItem, Double) => Unit) { regex1(s"^([.+-\\d]+)%* to $name")(f) }
+  def increased(name: js.String)(f: (ComputedItem, Double) => Unit) { regex1(s"^([.+-\\d]+)%* increased $name$$")(f) }
+  def reduced(name: js.String)(f: (ComputedItem, Double) => Unit) { regex1(s"^([.+-\\d]+)%* reduced $name$$")(f) }
+  def plusTo(name: js.String)(f: (ComputedItem, Double) => Unit) { regex1(s"^([.+-\\d]+)%* to $name$$")(f) }
   def addsDamage(name: js.String)(f: (ComputedItem, Double, Double) => Unit) {
-    regex2(s"^Adds ([\\d]+)-([\\d]+) $name Damage")(f)
+    regex2(s"^Adds ([\\d]+)-([\\d]+) $name Damage$$")(f)
   }
   def level(name: js.String)(f: (ComputedItem, Double) => Unit) {
     val a = if (name.isEmpty) "" else name + " "
-    val r = s"^([.+-\\d]+)%* to Level of ${a}Gems in this item"
+    val r = s"^([.+-\\d]+)%* to Level of ${a}Gems in this item$$"
     regex1(r)(f)
   }
   def simple1(prefix: js.String, suffix: js.String)(f: (ComputedItem, Double) => Unit) {
     val a = if (prefix.isEmpty) "" else prefix + " "
     val b = if (suffix.isEmpty) "" else " " + suffix
-    val r = s"^$a([.+-\\d]+)%*$b"
+    val r = s"^$a([.+-\\d]+)%*$b$$"
     regex1(r)(f)
   }
 
@@ -166,6 +166,7 @@ object PoeAffixesParsers {
   increased("Global Critical Strike Multiplier")(_.increased.globalCriticalStrikeMultiplier += _)
   increased("Global Critical Strike Chance")(_.increased.globalCriticalStrikeChance += _)
   increased("Critical Strike Chance")(_.increased.criticalStrikeChance += _)
+  increased("Critical Strike Chance for Spells")(_.increased.criticalStrikeChanceForSpells += _)
   increased("Quantity of Items found")(_.increased.quantityOfItemsFound += _)
   increased("Rarity of Items found")(_.increased.rarityOfItemsFound += _)
   increased("Movement Speed")(_.increased.movementSpeed += _)
@@ -179,11 +180,12 @@ object PoeAffixesParsers {
   increased("Accuracy Rating")(_.increased.accuracyRating += _)
 
   increased("Armour")(_.increased.armour += _)
-  increased("Evasion")(_.increased.evasion += _)
+  increased("Evasion Rating")(_.increased.evasion += _)
   increased("Energy Shield")(_.increased.energyShield += _)
   increased("maximum Energy Shield")(_.increased.maximumEnergyShield += _)
   increased("Armour and Evasion") { (i, a) => i.increased.armour += a; i.increased.evasion += a}
   increased("Armour and Energy Shield") { (i, a) => i.increased.armour += a; i.increased.energyShield += a}
+  increased("Evasion and Energy Shield") { (i, a) => i.increased.evasion += a; i.increased.energyShield += a}
 
   plusTo("Accuracy Rating")(_.plusTo.accuracyRating += _)
   plusTo("Armour")(_.plusTo.armour += _)
@@ -226,6 +228,9 @@ object PoeAffixesParsers {
   increased("Amount Recovered")(_.flask.increased.amountRecovered += _)
   increased("Recovery when on Low Life")(_.flask.increased.recoveryOnLowLife += _)
   increased("Life Recovered")(_.flask.increased.lifeRecovered += _)
+  increased("Armour during flask effect")(_.flask.increased.armour += _)
+  increased("Evasion Rating during flask effect")(_.flask.increased.evasion += _)
+  increased("Movement Speed during flask effect")(_.flask.increased.evasion += _)
 
   simple0("Dispels Frozen and Chilled")(_.flask.dispelsFrozenAndChilled = true)
   simple0("Dispels Shocked")(_.flask.dispelsShocked = true)
@@ -250,8 +255,8 @@ object PoeAffixesParsers {
   simple1("","additional Elemental Resistances during flask effect")(_.flask.additionalResistances += _)
   simple1("Grants","of Life Recovery to Minions")(_.flask.lifeRecoveryToMinions += _)
 
-
   val all = _all.toList
+
 }
 
 //20% increased Physical Damage

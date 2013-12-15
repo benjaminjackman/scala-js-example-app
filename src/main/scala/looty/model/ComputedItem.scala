@@ -21,7 +21,12 @@ case class MinMaxDamage(var min: Double, var max: Double) {
   }
 }
 
-class ComputedItem(val baseItem: AnyItem) extends {
+class ComputedItem(val item: AnyItem) extends {
+
+  lazy val maxLinks: Int = item.sockets.toList.map(_.group).groupBy(x => x).map(_._2.size).maxOpt.getOrElse(0)
+  def maxResist = plusTo.resistance.all.max
+  lazy val score = ItemScorer(this)
+
   object increased {
     val damage                         = Elements mutable 0.0
     var stunDurationOnEnemies          = 0.0
@@ -30,6 +35,7 @@ class ComputedItem(val baseItem: AnyItem) extends {
     var globalCriticalStrikeMultiplier = 0.0
     var globalCriticalStrikeChance     = 0.0
     var criticalStrikeChance           = 0.0
+    var criticalStrikeChanceForSpells  = 0.0
     var armour                         = 0.0
     var evasion                        = 0.0
     var energyShield                   = 0.0
@@ -54,10 +60,7 @@ class ComputedItem(val baseItem: AnyItem) extends {
 
 
   val damages = Elements of MinMaxDamage(0, 0)
-  def attacksPerSecond: Double = ???
-  val perElementDps = Elements calculatedWith { element =>
-    damages(element).avg * increased.damage(element) * attacksPerSecond
-  }
+
 
   object plusTo {
     val attribute      = Attributes mutable 0.0
@@ -79,6 +82,33 @@ class ComputedItem(val baseItem: AnyItem) extends {
     var minion    = 0.0
     var bow       = 0.0
     var any       = 0.0
+    def total = {
+      element.all.sum + attribute.all.sum + melee + minion + bow + any
+    }
+  }
+
+  object total {
+    def armour: Double = ???
+    def evasion: Double = ???
+    def energyShield: Double = ???
+    def dps: Double = perElementDps.all.sum
+
+    val perElementDps = Elements calculatedWith { element =>
+      damages(element).avg * increased.damage(element) * attacksPerSecond
+    }
+
+    def attacksPerSecond: Double = ???
+  }
+
+  object slots {
+    def is1H: Boolean = ???
+    def is2H: Boolean = ???
+    def isWeapon: Boolean = ???
+    def isSpiritShield: Boolean = ???
+    def isBelt: Boolean = ???
+    def isGlove: Boolean = ???
+    def isBoot: Boolean = ???
+    def isQuiver: Boolean = ???
   }
 
   var reflectsPhysicalDamageToAttackers = 0.0
@@ -100,6 +130,9 @@ class ComputedItem(val baseItem: AnyItem) extends {
       var amountRecovered    = 0.0
       var recoveryOnLowLife  = 0.0
       var lifeRecovered      = 0.0
+      var armour             = 0.0
+      var evasion            = 0.0
+      var movementSpeed      = 0.0
     }
 
     object reduced {
@@ -115,7 +148,7 @@ class ComputedItem(val baseItem: AnyItem) extends {
     var lifeFromMana                 = 0.0
 
     var additionalResistances = 0.0
-    var lifeRecoveryToMinions         = 0.0
+    var lifeRecoveryToMinions = 0.0
 
     var dispelsFrozenAndChilled = false
     var dispelsShocked          = false
@@ -126,6 +159,4 @@ class ComputedItem(val baseItem: AnyItem) extends {
     var instantRecovery         = false
     var instantRecoveryLowLife  = false
   }
-
-
 }

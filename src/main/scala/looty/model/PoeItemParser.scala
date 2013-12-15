@@ -42,6 +42,6 @@ object PoeItemParser {
     }
     if (parsed) parseCnt += 1 else failCnt += 1
     //    if (!parsed) console.log(item.name, item.typeLine, mod) else console.log("#########", mod)
-    if (!parsed) console.log(item.getFrameType.name, mod)
+    if (!parsed) console.log("Unable to parse affix", item.getFrameType.name, item.name, "->", mod)
   }
 }
