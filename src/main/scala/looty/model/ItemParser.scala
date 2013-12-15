@@ -19,45 +19,49 @@ object ItemParser {
 
   def parseItem(item: AnyItem): ComputedItem = {
     val ci = new ComputedItem(item)
-    parseExplicitMods(ci)
-    parseProperties(ci)
+    if (isEquippable(ci)) {
+      parseExplicitMods(ci)
+      parseProperties(ci)
+    }
     ci
   }
 
+  def isEquippable(ci: ComputedItem) = !ci.item.isGem && !ci.item.isCurrency && !ci.item.isMap
+
+
   def parseExplicitMods(ci: ComputedItem) {
-    if (!ci.item.isGem && !ci.item.isCurrency) {
-      for {
-        emods <- ci.item.explicitMods.toOption.toList
-        mod: js.String <- emods
-      } {
-        var parsed = false
-        AffixParsers.all.toList.foreach { parser =>
-          if (parser.parse(mod, ci)) {
-            parsed = true
-          }
+    for {
+      emods <- ci.item.explicitMods.toOption.toList
+      mod: js.String <- emods
+    } {
+      var parsed = false
+      AffixParsers.all.toList.foreach { parser =>
+        if (parser.parse(mod, ci)) {
+          parsed = true
         }
-        if (parsed) parseCnt += 1 else failCnt += 1
-        //    if (!parsed) console.log(item.name, item.typeLine, mod) else console.log("#########", mod)
-        if (!parsed) console.log("Unable to parse affix", ci.item.getFrameType.name, ci.item.name, "->", mod)
       }
+      if (parsed) parseCnt += 1 else failCnt += 1
+      //    if (!parsed) console.log(item.name, item.typeLine, mod) else console.log("#########", mod)
+      if (!parsed) console.log("Unable to parse affix", ci.item.getFrameType.name, ci.item.name, "->", mod)
     }
   }
 
 
   def parseProperties(ci: ComputedItem) {
-    for {
-      props <- ci.item.properties.toOption.toList
-      prop <- props
-    } {
-      var parsed = false
-      PropertyParsers.all.toList.foreach { parser =>
-        if (parser.parse(ci, prop)) {
-          parsed = true
+    if (!ci.item.isFlask) {
+      for {
+        props <- ci.item.properties.toOption.toList
+        prop <- props
+      } {
+        var parsed = false
+        PropertyParsers.all.toList.foreach { parser =>
+          if (parser.parse(ci, prop)) {
+            parsed = true
+          }
+          //        if (parsed) parseCnt += 1 else failCnt += 1
         }
-        //        if (parsed) parseCnt += 1 else failCnt += 1
+        if (!parsed) console.log("Unable to parse property", ci.item.getFrameType.name, ci.item.name, "->", prop, ci.item)
       }
-      if (!parsed) console.log("Unable to parse property", ci.item.getFrameType.name, ci.item.name, "->", prop)
     }
-
   }
 }

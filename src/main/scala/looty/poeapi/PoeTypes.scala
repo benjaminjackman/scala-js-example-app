@@ -87,6 +87,8 @@ object PoeTypes {
     implicit class AnyItemExtensions(val x: AnyItem) extends AnyVal {
       def isGem = x.getFrameType == FrameTypes.gem
       def isCurrency = x.getFrameType == FrameTypes.currency
+      def isMap = x.descrText.toOption.exists(_ contains  "Travel to this Map")
+      def isFlask = x.descrText.toOption.exists(_ contains "Right click to drink.")
 
       def getFrameType = {
         val ft = x.frameType.toInt
