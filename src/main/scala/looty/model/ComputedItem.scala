@@ -2,6 +2,7 @@ package looty
 package model
 
 import looty.poeapi.PoeTypes.AnyItem
+import looty.model.WeaponTypes.WeaponType
 
 
 //////////////////////////////////////////////////////////////
@@ -19,7 +20,12 @@ case class MinMaxDamage(var min: Double, var max: Double) {
     this.min += min
     this.max += max
   }
+  def set(that: MinMaxDamage) {
+    this.min = that.min
+    this.max = that.max
+  }
 }
+
 
 class ComputedItem(val item: AnyItem) extends {
 
@@ -101,14 +107,27 @@ class ComputedItem(val item: AnyItem) extends {
   }
 
   object slots {
-    def is1H: Boolean = ???
-    def is2H: Boolean = ???
-    def isWeapon: Boolean = ???
+    def is1H: Boolean = properties.weaponType.is1H
+    def is2H: Boolean = properties.weaponType.is2H
+    def isWeapon: Boolean = properties.weaponType.isWeapon
     def isSpiritShield: Boolean = ???
     def isBelt: Boolean = ???
     def isGlove: Boolean = ???
     def isBoot: Boolean = ???
     def isQuiver: Boolean = ???
+  }
+
+
+  object properties {
+    var weaponType: WeaponType = WeaponTypes.NoWeaponType
+    var armour                 = 0.0
+    var energyShield           = 0.0
+    var evasionRating          = 0.0
+    val damages                = Elements of MinMaxDamage(0, 0)
+    var quality                = 0.0
+    var criticalStrikeChance   = 0.0
+    var attacksPerSecond       = 0.0
+    var chanceToBlock          = 0.0
   }
 
   var reflectsPhysicalDamageToAttackers = 0.0

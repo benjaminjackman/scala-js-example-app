@@ -13,7 +13,7 @@ import scala.scalajs.js
 //////////////////////////////////////////////////////////////
 
 
-object PoeAffixesParsers {
+object AffixParsers {
   private var _all = new js.Array[AffixParser]()
   def add(affix: AffixParser) {
     _all.push(affix)
@@ -135,30 +135,6 @@ object PoeAffixesParsers {
     simple1("", s"${x.cap} Regenerated per second")(_.regeneratedPerSecond.+=(x, _))
     simple1("", s"${x.cap} gained for each enemy hit by your Attacks")(_.onHit.lifeAndMana +=(x, _))
   }
-  //  100% increased Damage when on Low Life example.js:6460
-  //  +2 Life gained for each enemy hit by your Attacks example.js:6460
-  //  14% increased Cast Speed example.js:6460
-  //  11% reduced maximum Mana example.js:6460
-  //  Conduit example.js:6460
-  //  +1 to Level of Strength Gems in this item example.js:6460
-  //  Culling Strike example.js:6460
-  //  3.3 Life Regenerated per second example.js:6460
-  //  10% Chance to Cause Monsters to Flee example.js:6460
-  //  +1 maximum Endurance Charge example.js:6460
-  //  10% additional Chance to Block while Dual Wielding example.js:6460
-  //  12% increased Global Attack Speed per Green Socket example.js:6460
-  //  +2 to Melee Weapon Range per White Socket example.js:6460
-  //  10% increased Movement Speed example.js:6460
-  //  35% increased Movement Speed when on Full Life example.js:6460
-  //  100% increased Claw Physical Damage when on Low Life example.js:6460
-  //  100% increased Accuracy Rating when on Low Life example.js:6460
-  //  35% increased Movement Speed when on Full Life example.js:6460
-  //  20% reduced Rarity of Items found example.js:6460
-  //  +3 Life gained for each enemy hit by your Attacks example.js:6460
-  //  20% reduced Cast Speed example.js:6460
-  //  +5% to maximum Cold Resistance example.js:6460
-  //  Reflects 33 Cold Damage to Melee Attackers example.js:6460
-  //  5% additional Block Chance
 
   increased("Attack Speed")(_.increased.attackSpeed += _)
   increased("Stun Duration on enemies")(_.increased.stunDurationOnEnemies += _)

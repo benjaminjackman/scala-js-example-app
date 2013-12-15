@@ -1,7 +1,7 @@
 package looty
 
 import scala.scalajs.js
-import looty.model.{ComputedItem, PoeItemParser, PoeCacher}
+import looty.model.{ComputedItem, ItemParser, PoeCacher}
 import cgta.cjs.lang.JsPromise
 
 
@@ -33,7 +33,7 @@ object LootyMain {
         tab <- tabs
         item <- tab.items
       } {
-        items.push(PoeItemParser.parseItem(item))
+        items.push(ItemParser.parseItem(item))
       }
     }
 

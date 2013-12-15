@@ -113,7 +113,7 @@ object PoeTypes {
     val name         : js.String
     val typeLine     : js.String
     val identified   : js.Boolean
-    val properties   : js.Array[ItemProperty]
+    val properties   : Optional[js.Array[ItemProperty]]
     val requirements : js.Array[ItemRequirement]
     val descrText    : Optional[js.String]
     val secDescrText : Optional[js.String]
@@ -139,9 +139,15 @@ object PoeTypes {
     val attr : js.String //Seems to be DSI not sure what white is as I don't have a Tabula Rasa ... yet...
   }
 
+  object ItemProperty {
+    implicit class ItemPropertyExtensions(val x : ItemProperty) extends AnyVal {
+      def firstValue : String = x.values(0)(0).toString
+    }
+  }
+
   trait ItemProperty extends js.Object {
     val name       : js.String
-    val values     : js.Array[js.Array[Number]]
+    val values     : js.Array[js.Array[Any]]
     val displayMode: js.Number
   }
 

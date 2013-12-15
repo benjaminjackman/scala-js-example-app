@@ -109,7 +109,21 @@ its name do this
 # Bugs #
 console.log("hi".capitalize)
 Uncaught TypeError: Object hi has no method 'toCharArray'
-(that is a java method, needs to be added)S
+(that is a java method, needs to be added)
+
+
+# Issues #
+Equality is a bit hairy, since == is unchecked in scala
+and you can easily end up comparing a js.String to String
+this is an issue with using implicit conversions in the
+way ScalaJs and is pretty unavoidable, I have taken to
+always using my typesafe equals operator, to catch these
+error. The compiler will also usually warn when comparing
+these types as they can never be equal. I want the extra
+security type safe equals brings. And equality that captures
+and uses relevant implicit conversions would probably be desired.
+I haven't added it yet.
+
 
 # Suggestions #
 
