@@ -2,8 +2,8 @@ package looty
 
 import scala.scalajs.js
 import looty.model.{ComputedItem, ItemParser, PoeCacher}
-import cgta.cjs.lang.JsPromise
 import looty.poeapi.PoeTypes.Leagues
+import looty.views.LootGrid
 
 
 //////////////////////////////////////////////////////////////
@@ -33,7 +33,7 @@ object LootyMain {
       invs <- pc.getAllInventories(Leagues.Standard)
     } yield {
       for {
-        (tab,i) <- tabs.zipWithIndex
+        (tab, i) <- tabs.zipWithIndex
         item <- tab.items
       } {
         val ci = ItemParser.parseItem(item)
@@ -51,12 +51,17 @@ object LootyMain {
       }
     }
 
-    parseFuture.onComplete {
-      (x) =>
-        items.sortBy(-_.score.score).foreach { ci =>
-          console.log(ci.location, ci.score.toString, ci.item.name)
-        }
-    }
+    val grid = new LootGrid
+
+    parseFuture.onComplete((x) => grid.start(items))
+
+    //    parseFuture.onComplete {
+    //      (x) =>
+    //        grid.start(items)
+    ////        items.sortBy(-_.score.score).foreach { ci =>
+    ////          console.log(ci.location, ci.score.toString, ci.item.name)
+    ////        }
+    //    }
 
 
   }

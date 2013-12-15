@@ -30,6 +30,20 @@ object WeaponTypes {
     def isDagger: Boolean = false
     def isClaw: Boolean = false
     def isBow: Boolean = false
+    override def toString = name
+    def toShortString: String = {
+      val prefix = if (is1H) "1H" else "2H"
+
+      if (isSword) prefix + "Sword"
+      else if (isAxe) prefix + "Axe"
+      else if (isMace) prefix + "Mace"
+      else if (isStaff) "Staff"
+      else if (isWand) "Wand"
+      else if (isDagger) "Dagger"
+      else if (isClaw) "Claw"
+      else if (isBow) "Bow"
+      else "UnknownWeaponType"
+    }
   }
 
   object NoWeaponType extends WeaponType("WILL_NEVER_MATCH")

@@ -36,6 +36,23 @@ class ComputedItem(val item: AnyItem) extends {
   def isEquippable = !item.isGem && !item.isCurrency && !item.isMap && !item.isQuest
 
   var location = ""
+  def typeName = {
+    if (slots.isAmulet) "Amulet"
+    else if (slots.isRing) "Ring"
+    else if (slots.isHelmet) "Helmet"
+    else if (slots.isChest) "Chest"
+    else if (slots.isGloves) "Gloves"
+    else if (slots.isBoots) "Boots"
+    else if (slots.isBelt) "Belt"
+    else if (slots.isShield) "Shield"
+    else if (slots.isFlask) "Flask"
+    else if (slots.isWeapon) properties.weaponType.toShortString
+    else if (item.isCurrency) "Currency"
+    else if (item.isGem) "Gem"
+    else if (item.isMap) "Map"
+    else if (item.isQuest) "QuestItem"
+    else "UKNOWN ITEM TYPE"
+  }
 
   object increased {
     val damage                         = Elements mutable 0.0

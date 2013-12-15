@@ -113,6 +113,8 @@ Uncaught TypeError: Object hi has no method 'toCharArray'
 
 
 # Issues #
+
+## Equality is tricky ##
 Equality is a bit hairy, since == is unchecked in scala
 and you can easily end up comparing a js.String to String
 this is an issue with using implicit conversions in the
@@ -123,6 +125,10 @@ these types as they can never be equal. I want the extra
 security type safe equals brings. And equality that captures
 and uses relevant implicit conversions would probably be desired.
 I haven't added it yet.
+
+## No gt, lt etc on js.Dynamic ##
+Needs to be added so that it doesn't treat those operations
+as function calls
 
 
 # Suggestions #
