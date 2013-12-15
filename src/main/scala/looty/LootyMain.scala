@@ -3,6 +3,7 @@ package looty
 import scala.scalajs.js
 import looty.model.{ComputedItem, ItemParser, PoeCacher}
 import cgta.cjs.lang.JsPromise
+import looty.poeapi.PoeTypes.Leagues
 
 
 //////////////////////////////////////////////////////////////
@@ -27,20 +28,34 @@ object LootyMain {
     val pc = new PoeCacher()
 
     val parseFuture = for {
-      tabs <- pc.getAllStashTabs("Standard")
+      tabInfos <- pc.getStashInfo(Leagues.Standard)
+      tabs <- pc.getAllStashTabs(Leagues.Standard)
+      invs <- pc.getAllInventories(Leagues.Standard)
     } yield {
       for {
-        tab <- tabs
+        (tab,i) <- tabs.zipWithIndex
         item <- tab.items
       } {
-        items.push(ItemParser.parseItem(item))
+        val ci = ItemParser.parseItem(item)
+        ci.location = tabInfos(i).n
+        items.push(ci)
+      }
+
+      for {
+        (char, inv) <- invs
+        item <- inv.items
+      } {
+        val ci = ItemParser.parseItem(item)
+        ci.location = char
+        items.push(ci)
       }
     }
 
     parseFuture.onComplete {
       (x) =>
-        console.log("Done parsing items", items)
-        console.log(items.toList.map(_.maxLinks).toArray)
+        items.sortBy(-_.score.score).foreach { ci =>
+          console.log(ci.location, ci.score.toString, ci.item.name)
+        }
     }
 
 

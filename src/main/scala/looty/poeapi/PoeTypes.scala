@@ -38,15 +38,18 @@ object PoeTypes {
     val name   : js.String
   }
 
-  trait Inventory extends js.Object {
-    val error    : Optional[js.String]
-    val character: js.String
-    val items    : js.Array[AnyItem]
+  trait ItemContainer extends js.Object {
+    val items: js.Array[AnyItem]
   }
 
-  trait StashTab extends js.Object {
+  trait Inventory extends js.Object with ItemContainer {
+    val error    : Optional[js.String]
+    val character: js.String
+
+  }
+
+  trait StashTab extends js.Object with ItemContainer {
     val numTabs: js.Number
-    val items  : js.Array[AnyItem]
 
     //Returned optionally when tabs = 1 is set
     val tabs : Optional[js.Array[StashTabInfo]]
@@ -80,14 +83,16 @@ object PoeTypes {
       val unique   = FrameType(3, "unique")
       val gem      = FrameType(4, "gem")
       val currency = FrameType(5, "currency")
+      val quest = FrameType(6, "quest")
 
-      val all = List(normal, magic, rare, unique, gem, currency)
+      val all = List(normal, magic, rare, unique, gem, currency, quest)
     }
 
     implicit class AnyItemExtensions(val x: AnyItem) extends AnyVal {
       def isGem = x.getFrameType == FrameTypes.gem
       def isCurrency = x.getFrameType == FrameTypes.currency
-      def isMap = x.descrText.toOption.exists(_ contains  "Travel to this Map")
+      def isQuest = x.getFrameType == FrameTypes.quest
+      def isMap = x.descrText.toOption.exists(_ contains "Travel to this Map")
       def isFlask = x.descrText.toOption.exists(_ contains "Right click to drink.")
 
       def getFrameType = {
@@ -120,6 +125,7 @@ object PoeTypes {
     val descrText    : Optional[js.String]
     val secDescrText : Optional[js.String]
     val explicitMods : Optional[js.Array[js.String]]
+    val implicitMods : Optional[js.Array[js.String]]
     val frameType    : js.Number
     val socketedItems: js.Array[AnyItem]
 
@@ -142,8 +148,8 @@ object PoeTypes {
   }
 
   object ItemProperty {
-    implicit class ItemPropertyExtensions(val x : ItemProperty) extends AnyVal {
-      def firstValue : String = x.values(0)(0).toString
+    implicit class ItemPropertyExtensions(val x: ItemProperty) extends AnyVal {
+      def firstValue: String = x.values(0)(0).toString
     }
   }
 

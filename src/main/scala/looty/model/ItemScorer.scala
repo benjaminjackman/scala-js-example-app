@@ -42,9 +42,7 @@ object ItemScorer {
     //5L+ are an auto +100, implying "never vendor these."
     fscore100("5+ Linked Sockets")(_.maxLinks > 4)
 
-    fscore1("4 Linked Sockets")(_.maxLinks == 4)
-
-    fscore1("5+ sockets")(_.item.sockets.size > 4)
+    fscore1("4 Linked Sockets or 5+ sockets")(i => i.maxLinks == 4 || i.item.sockets.size >= 5)
 
     fscore1("60+ max Life")(_.plusTo.lifeAndMana.life >= 60)
     fscore1("60+ max Mana")(_.plusTo.lifeAndMana.mana >= 40)
@@ -53,24 +51,26 @@ object ItemScorer {
     fscore1("60%+ evasion")(_.increased.evasion >= 60)
     fscore1("60%+ energyShield")(_.increased.energyShield >= 60)
 
-    fscore1("1000+ evasion")(_.total.evasion >= 1000)
-    fscore1("200+ energy shield")(_.total.energyShield >= 200)
-    fscore1("1000+ armour")(_.total.armour >= 1000)
+    fscore1("1000+ evasion")(_.properties.evasionRating >= 1000)
+    fscore1("200+ energy shield")(_.properties.energyShield >= 200)
+    fscore1("1000+ armour")(_.properties.armour >= 1000)
 
-    fscore1("200+ armour belt")(_.slots.isBelt, _.total.armour >= 200)
+    fscore1("200+ armour belt")(_.slots.isBelt, _.plusTo.armour >= 200)
 
-    fscore1("8%+ Attack speed glove")(_.slots.isGlove, _.increased.attackSpeed >= 8)
-    fscore1("Fire Glove")(_.slots.isGlove, _.damages.fire.max >= 20)
-    fscore1("Cold Glove")(_.slots.isGlove, _.damages.cold.max >= 16)
-    fscore1("Lit Glove")(_.slots.isGlove, _.damages.lightning.max >= 30)
-    fscore1("Phys Glove")(_.slots.isGlove, _.damages.physical.max >= 15)
+    fscore1("8%+ Attack speed Non-Weapon")(!_.slots.isWeapon, _.increased.attackSpeed >= 8)
+    fscore1("Fire Dmg Non-Weapon")(!_.slots.isWeapon, _.damages.fire.max >= 20)
+    fscore1("Cold Dmg Non-Weapon")(!_.slots.isWeapon, _.damages.cold.max >= 16)
+    fscore1("Lit Dmg Non-Weapon")(!_.slots.isWeapon, _.damages.lightning.max >= 30)
+    fscore1("Phys Dmg Non-Weapon")(!_.slots.isWeapon, _.damages.physical.max >= 15)
 
-    fscore1("Fast Boots")(_.slots.isBoot, _.increased.movementSpeed >= 20)
+    fscore1("Adds Speed")(_.increased.movementSpeed >= 20)
 
     fscore1("+Weapon Elemental Damage")(!_.slots.isWeapon, _.increased.elementalDamageWithWeapons >= 15)
-    fscore1("One Resist > 35")(_.plusTo.resistance.all.exists(_ > 35))
-    fscore1("Two resists > 20")(_.plusTo.resistance.all.count(_ > 20) >= 2)
-    fscore1("Three resists >= 10")(_.plusTo.resistance.all.count(_ > 10) >= 3)
+    fscore1("Good Resists") { i =>
+      i.plusTo.resistance.all.exists(_ > 35) ||
+          i.plusTo.resistance.all.count(_ > 20) >= 2 ||
+          i.plusTo.resistance.all.count(_ > 10) >= 3
+    }
     fscore1("Projectile Speed")(_.increased.projectileSpeed >= 20)
 
     fscore1("+2+ for gems")(_.gemLevel.total >= 2)
@@ -79,9 +79,11 @@ object ItemScorer {
     fscore1("30%+ Increased Spell Damage (Spirit Shield)")(
       !_.slots.isWeapon, _.slots.isSpiritShield, _.increased.spellDamage >= 30)
 
-    fscore1("30+ to an attribute")(_.plusTo.attribute.all.exists(_ >= 30))
-    fscore1("25+ to two attributes")(_.plusTo.attribute.all.count(_ >= 25) >= 2)
-    fscore1("20+ to three attributes")(_.plusTo.attribute.all.count(_ >= 20) >= 3)
+    fscore1("Good Attributes") { i =>
+      i.plusTo.attribute.all.exists(_ >= 30) ||
+          i.plusTo.attribute.all.count(_ >= 25) >= 2 ||
+          i.plusTo.attribute.all.count(_ >= 20) >= 3
+    }
 
     fscore1("15%+ to IIQ")(_.increased.quantityOfItemsFound >= 15)
     fscore1("15%+ to IIR")(_.increased.rarityOfItemsFound >= 15)
@@ -106,8 +108,8 @@ object ItemScorer {
     fscore1("Life Leech")(_.leech.physical.life > 0)
     fscore1("Mana Leech")(_.leech.physical.mana > 0)
 
-    fscore1("1H DPS")(_.slots.is1H, _.total.dps >= 250)
-    fscore1("2H DPS")(_.slots.is2H, _.total.dps >= 375)
+    fscore("1H DPS")(_.slots.is1H, _.total.dps >= 250)(10)
+    fscore("2H DPS")(_.slots.is2H, _.total.dps >= 375)(10)
   }
 
 

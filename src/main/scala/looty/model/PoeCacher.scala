@@ -6,6 +6,7 @@ import cgta.cjs.chrome.Storage
 import scala.concurrent.Future
 import looty.poeapi.PoeTypes.{Leagues, StashTab, StashTabInfos, Inventory, Characters}
 import cgta.cjs.lang.JsFuture
+import scala.scalajs.js
 
 
 //////////////////////////////////////////////////////////////
@@ -95,7 +96,17 @@ class PoeCacher(account: String = "UnknownAccount!") {
     }
   }
 
-  def basicRefresh() : Future[Any] =  {
+  def getAllInventories(league: String): Future[List[(js.String, Inventory)]] = {
+    getChars() flatMap { chars =>
+      JsFuture.sequence {
+        chars.toList.filter(_.league.toString =?= league).map { char =>
+          getInv(char.name).map(char.name -> _)
+        }
+      }
+    }
+  }
+
+  def basicRefresh(): Future[Any] = {
     //Doesn't download anything that is already present
     //Get all the character inventories
     JsFuture.sequence(

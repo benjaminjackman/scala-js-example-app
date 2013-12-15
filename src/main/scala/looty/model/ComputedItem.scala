@@ -31,7 +31,11 @@ class ComputedItem(val item: AnyItem) extends {
 
   lazy val maxLinks: Int = item.sockets.toList.map(_.group).groupBy(x => x).map(_._2.size).maxOpt.getOrElse(0)
   def maxResist = plusTo.resistance.all.max
-  lazy val score = ItemScorer(this)
+  lazy val score: ItemScore = ItemScorer(this).getOrElse(ItemScore(Nil, 0))
+
+  def isEquippable = !item.isGem && !item.isCurrency && !item.isMap && !item.isQuest
+
+  var location = ""
 
   object increased {
     val damage                         = Elements mutable 0.0
@@ -57,6 +61,8 @@ class ComputedItem(val item: AnyItem) extends {
     var castSpeed                      = 0.0
     var projectileSpeed                = 0.0
     var accuracyRating                 = 0.0
+    var blockRecovery                  = 0.0
+    var elementalDamage                = 0.0
   }
 
   object reduced {
@@ -64,9 +70,7 @@ class ComputedItem(val item: AnyItem) extends {
     var enemyStunThreshold    = 0.0
   }
 
-
   val damages = Elements of MinMaxDamage(0, 0)
-
 
   object plusTo {
     val attribute      = Attributes mutable 0.0
@@ -94,27 +98,29 @@ class ComputedItem(val item: AnyItem) extends {
   }
 
   object total {
-    def armour: Double = ???
-    def evasion: Double = ???
-    def energyShield: Double = ???
     def dps: Double = perElementDps.all.sum
-
     val perElementDps = Elements calculatedWith { element =>
-      damages(element).avg * increased.damage(element) * attacksPerSecond
+      properties.damages(element).avg * properties.attacksPerSecond
     }
-
-    def attacksPerSecond: Double = ???
   }
 
   object slots {
     def is1H: Boolean = properties.weaponType.is1H
     def is2H: Boolean = properties.weaponType.is2H
     def isWeapon: Boolean = properties.weaponType.isWeapon
-    def isSpiritShield: Boolean = ???
-    def isBelt: Boolean = ???
-    def isGlove: Boolean = ???
-    def isBoot: Boolean = ???
-    def isQuiver: Boolean = ???
+    def isFlask = item.isFlask
+    //TODO Fix this!
+    var isSpiritShield = false
+    var isShield       = false
+
+    var isHelmet = false
+    var isChest  = false
+    var isGloves = false
+    var isAmulet = false
+    var isRing   = false
+    var isBelt   = false
+    var isBoots  = false
+    var isQuiver = false
   }
 
 
@@ -131,7 +137,7 @@ class ComputedItem(val item: AnyItem) extends {
   }
 
   var reflectsPhysicalDamageToAttackers = 0.0
-  var additionalBlockChance             = 0.0
+  var blockChance                       = 0.0
 
   val regeneratedPerSecond = LifeAndMana mutable 0.0
 

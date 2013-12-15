@@ -14,6 +14,14 @@ import scala.scalajs.js
 
 
 object AffixParsers {
+  def parse(item: ComputedItem, s: js.String): Boolean = {
+    var parsed = false
+    all.toList.foreach { parser =>
+      if (parser.parse(s, item)) parsed = true
+    }
+    parsed
+  }
+
   private var _all = new js.Array[AffixParser]()
   def add(affix: AffixParser) {
     _all.push(affix)
@@ -154,6 +162,8 @@ object AffixParsers {
   increased("Cast Speed")(_.increased.castSpeed += _)
   increased("Projectile Speed")(_.increased.projectileSpeed += _)
   increased("Accuracy Rating")(_.increased.accuracyRating += _)
+  increased("Block Recovery")(_.increased.blockRecovery += _)
+  increased("Elemental Damage")(_.increased.elementalDamage += _)
 
   increased("Armour")(_.increased.armour += _)
   increased("Evasion Rating")(_.increased.evasion += _)
@@ -178,6 +188,18 @@ object AffixParsers {
     i.plusTo.attribute.dexterity += n
     i.plusTo.attribute.intelligence += n
   }
+  plusTo("Strength and Dexterity") { (i, n) =>
+    i.plusTo.attribute.strength += n
+    i.plusTo.attribute.dexterity += n
+  }
+  plusTo("Strength and Intelligence") { (i, n) =>
+    i.plusTo.attribute.strength += n
+    i.plusTo.attribute.intelligence += n
+  }
+  plusTo("Dexterity and Intelligence") { (i, n) =>
+    i.plusTo.attribute.dexterity += n
+    i.plusTo.attribute.intelligence += n
+  }
 
 
   reduced("Attribute Requirements")(_.reduced.attributeRequirements += _)
@@ -189,7 +211,8 @@ object AffixParsers {
   level("")(_.gemLevel.minion += _)
 
   simple1("Reflects", "Physical Damage to Melee Attackers")(_.reflectsPhysicalDamageToAttackers += _)
-  simple1("", "additional Block Chance")(_.additionalBlockChance += _)
+  simple1("", "additional Block Chance")(_.blockChance += _)
+  simple1("", "Chance to Block")(_.blockChance += _)
 
 
 
@@ -228,8 +251,8 @@ object AffixParsers {
   simple1("Recharges", "Charge when you deal a Critical Strike")(_.flask.chargesOnCriticalStrikeGiven += _)
   simple1("Removes", "of Life Recovered from Mana when used")(_.flask.lifeFromMana += _)
 
-  simple1("","additional Elemental Resistances during flask effect")(_.flask.additionalResistances += _)
-  simple1("Grants","of Life Recovery to Minions")(_.flask.lifeRecoveryToMinions += _)
+  simple1("", "additional Elemental Resistances during flask effect")(_.flask.additionalResistances += _)
+  simple1("Grants", "of Life Recovery to Minions")(_.flask.lifeRecoveryToMinions += _)
 
   val all = _all.toList
 

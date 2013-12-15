@@ -15,6 +15,16 @@ import looty.poeapi.PoeTypes.ItemProperty
 
 
 object PropertyParsers {
+  def parse(item: ComputedItem, property: ItemProperty) : Boolean = {
+    var parsed = false
+    all.toList.foreach { parser =>
+      if (parser.parse(item, property)) {
+        parsed = true
+      }
+    }
+    parsed
+  }
+
   private val _all = new js.Array[PropertyParser]()
   def add(affix: PropertyParser) {
     _all.push(affix)
