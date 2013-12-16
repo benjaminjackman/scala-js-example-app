@@ -35,6 +35,7 @@ class LootGrid() {
       makeColumn("typeName")(_.typeName),
       makeColumn("score")(_.score.score),
       makeColumn("dps")(_.total.dps.round),
+      makeColumn("aps")(_.properties.attacksPerSecond),
       makeColumn("AR")(_.properties.armour),
       makeColumn("EV")(_.properties.evasionRating),
       makeColumn("ES")(_.properties.energyShield),
@@ -47,8 +48,9 @@ class LootGrid() {
       makeColumn("fDps")(_.total.perElementDps(Elements.fire).round),
       makeColumn("cDps")(_.total.perElementDps(Elements.cold).round),
       makeColumn("lDps")(_.total.perElementDps(Elements.lightning).round),
-      makeColumn("crit")(_.total.critChance)
-
+      makeColumn("crit")(_.total.critChance),
+      makeColumn("+bow")(_.gemLevel.bow),
+      makeColumn("+minion")(_.gemLevel.minion)
     )
 
     val options = {

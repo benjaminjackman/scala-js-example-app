@@ -13,7 +13,7 @@ import scala.scalajs.js
 //////////////////////////////////////////////////////////////
 
 
-trait JSConsole extends js.Object {
+trait JsConsole extends js.Object {
   def log(xs : Any*)
   def error(xs : Any*)
 }

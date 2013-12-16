@@ -17,7 +17,7 @@ import scala.concurrent.Future
 trait CjsDsl extends JsExtensions {
 
   def global = js.Dynamic.global
-  def console = global.console.asInstanceOf[JSConsole]
+  def console = global.console.asInstanceOf[JsConsole]
   def JSON = global.JSON
   def newObject = js.Object().asInstanceOf[js.Dynamic]
 

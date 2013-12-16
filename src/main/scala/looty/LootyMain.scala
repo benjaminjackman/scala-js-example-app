@@ -4,6 +4,7 @@ import scala.scalajs.js
 import looty.model.{ComputedItem, ItemParser, PoeCacher}
 import looty.poeapi.PoeTypes.Leagues
 import looty.views.LootGrid
+import scala.collection.mutable.ArrayBuffer
 
 
 //////////////////////////////////////////////////////////////
@@ -14,14 +15,18 @@ import looty.views.LootGrid
 // Created by bjackman @ 12/9/13 11:22 PM
 //////////////////////////////////////////////////////////////
 
-class Point(x: js.Number, y: js.Number) extends js.Object
+
+object JsPoint {
+  implicit class JsPointExtensions(val p: JsPoint) extends AnyVal {
+    def magnitude = js.Math.sqrt(p.x * p.x + p.y * p.y)
+  }
+}
+class JsPoint(val x: js.Number, val y: js.Number) extends js.Object
+case class Point(x: Int, y: Int)
 
 object LootyMain {
 
-
-  def main(args: Array[String]) {
-    console.log("Hello World! Looty Main!")
-
+  def loadLooty() {
     val items = new js.Array[ComputedItem]()
 
     val pc = new PoeCacher()
@@ -65,7 +70,71 @@ object LootyMain {
     ////        }
     //    }
 
+  }
 
+  //    *  foo.method("blah")      ~~> foo.applyDynamic("method")("blah")
+  //    *  foo.method(x = "blah")  ~~> foo.applyDynamicNamed("method")(("x", "blah"))
+  //    *  foo.method(x = 1, 2)    ~~> foo.applyDynamicNamed("method")(("x", 1), ("", 2))
+  //    *  foo.field           ~~> foo.selectDynamic("field")
+  //    *  foo.varia = 10      ~~> foo.updateDynamic("varia")(10)
+  //    *  foo.arr(10) = 13    ~~> foo.selectDynamic("arr").update(10, 13)
+  //    *  foo.arr(10)         ~~> foo.applyDynamic("arr")(10)
+
+  import scala.language.dynamics
+  class JsObjectBuilder extends Dynamic {
+    def applyDynamicNamed[A](name: String)(args: (String, js.Any)*): A = {
+      if (name != "apply") {
+        sys.error("Call jsObj like this jsObj(x=1, y=2) which returns a javascript object that is {x:1,y:2}")
+      }
+      val obj = js.Object().asInstanceOf[js.Dictionary]
+      args.foreach { case (name, value) =>
+        obj(name) = value
+      }
+      obj.asInstanceOf[A]
+    }
+    //Allows for jsObj()
+    def applyDynamic[A](name: String)(args: Nothing*) = {
+      if (args.nonEmpty) {
+        sys.error("Call jsObj only with named parameters.")
+      }
+      js.Object().asInstanceOf[A]
+    }
+  }
+  val jsObj = new JsObjectBuilder
+  def jsArr(xs: js.Any*) = js.Array(xs: _*)
+
+  def tryJsObj() {
+    console.log("Begin Main!")
+    val foo = jsObj(
+      x = 5,
+      y = 5,
+      zs = js.Array(1, 2, 3),
+      foo = jsObj(
+        b = 6,
+        c = 7)
+    )
+    console.log(jsObj())
+    console.log(JSON.stringify(foo))
+    //Prints {"x":5,"y":5,"zs":[1,2,3],"foo":{"b":6,"c":7}}
+
+    //Note that jsObj can also be given a type parameter
+    //that type will be used as the return type,
+    //However it's just a NOP and doesn't do real type
+    //safety, I think it might be possible to do with
+    //a macro, howevr i think a better approach would
+    //be to do it as part of the actual ScalaJs backend.
+    //using the new keyword.
+  }
+
+  def main(args: Array[String]) {
+        tryJsObj()
+    //    loadLooty()
+
+    val xs = ArrayBuffer[Int](1, 2, 3, 4, 5, 6)
+    val ys: js.Array[js.Number] = xs.map(x => x: js.Number).toArray[js.Number]: js.Array[js.Number]
+    console.log(ys)
+    console.log(Point(1, 3))
+    console.log(jsObj[JsPoint](x = 1, y = 2).magnitude)
   }
 
 }

@@ -22,7 +22,7 @@ object AffixParsers {
     parsed
   }
 
-  private var _all = new js.Array[AffixParser]()
+  private val _all = new js.Array[AffixParser]()
   def add(affix: AffixParser) {
     _all.push(affix)
   }
@@ -141,7 +141,7 @@ object AffixParsers {
     regex1(s"^([+-\\d]+)% of Physical Attack Damage Leeched as ${x.cap}")(_.onKill.lifeAndMana(x) += _)
     plusTo(s"maximum ${x.cap}")(_.plusTo.lifeAndMana.+=(x, _))
     simple1("", s"${x.cap} Regenerated per second")(_.regeneratedPerSecond.+=(x, _))
-    simple1("", s"${x.cap} gained for each enemy hit by your Attacks")(_.onHit.lifeAndMana +=(x, _))
+    simple1("", s"${x.cap} gained for each enemy hit by your Attacks")(_.onHit.lifeAndMana.+=(x, _))
   }
 
   increased("Attack Speed")(_.increased.attackSpeed += _)
@@ -207,8 +207,8 @@ object AffixParsers {
 
   level("Melee")(_.gemLevel.melee += _)
   level("Minion")(_.gemLevel.minion += _)
-  level("Bow")(_.gemLevel.minion += _)
-  level("")(_.gemLevel.minion += _)
+  level("Bow")(_.gemLevel.bow += _)
+  level("")(_.gemLevel.addToAll(_))
 
   simple1("Reflects", "Physical Damage to Melee Attackers")(_.reflectsPhysicalDamageToAttackers += _)
   simple1("", "additional Block Chance")(_.blockChance += _)

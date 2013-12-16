@@ -130,6 +130,29 @@ I haven't added it yet.
 Needs to be added so that it doesn't treat those operations
 as function calls
 
+## js.Array[A <: js.Any] ? ##
+It's pretty easy to end up with a js.Array of scala Ints rather than of js.Numbers
+this could be dangerous, maybe the default case should push for the implicit conversion,
+that of course has it's own problems.
+
+    object NewJs extends Dynamic {
+      def applyDynamicNamed(name: String)(args: (String, js.Any)*) = {
+        if (name != "apply") {
+          sys.error("Call NewJs like this NewJs")
+        }
+        val obj = js.Object().asInstanceOf[js.Dictionary]
+        args.foreach { case (name, value) =>
+          obj(name) = value
+        }
+        obj
+      }
+    }
+
+    def main(args: Array[String]) {
+      console.log("Begin Main!")
+      console.log(NewJs(x = 5, y = 5, zs = js.Array(1,2,3))) //Scala Ints end up in array
+      console.log(NewJs(x = 5, y = 5, zs = js.Array[js.Number](1,2,3)))//Js numbers end up in array
+    }
 
 # Suggestions #
 

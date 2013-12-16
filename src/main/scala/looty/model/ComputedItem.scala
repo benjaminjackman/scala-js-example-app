@@ -51,7 +51,7 @@ class ComputedItem(val item: AnyItem) extends {
     else if (item.isGem) "Gem"
     else if (item.isMap) "Map"
     else if (item.isQuest) "QuestItem"
-    else "UKNOWN ITEM TYPE"
+    else "UNKNOWN ITEM TYPE"
   }
 
   object increased {
@@ -109,6 +109,14 @@ class ComputedItem(val item: AnyItem) extends {
     var minion    = 0.0
     var bow       = 0.0
     var any       = 0.0
+    def addToAll(n: Double) = {
+      Elements.all.foreach(element +=(_, n))
+      Attributes.all.foreach(attribute +=(_, n))
+      melee += n
+      minion += n
+      bow += n
+      any += n
+    }
     def total = {
       element.all.sum + attribute.all.sum + melee + minion + bow + any
     }
