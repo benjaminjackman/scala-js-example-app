@@ -119,6 +119,8 @@ class ComputedItem(val item: AnyItem) extends {
     val perElementDps = Elements calculatedWith { element =>
       properties.damages(element).avg * properties.attacksPerSecond
     }
+    def critChance = (100 + increased.globalCriticalStrikeChance + increased.criticalStrikeChance) / 100.0 *
+        properties.criticalStrikeChance
   }
 
   object slots {

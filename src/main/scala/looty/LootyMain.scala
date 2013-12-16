@@ -22,7 +22,6 @@ object LootyMain {
   def main(args: Array[String]) {
     console.log("Hello World! Looty Main!")
 
-    console.log("hi".cap)
     val items = new js.Array[ComputedItem]()
 
     val pc = new PoeCacher()
@@ -53,7 +52,10 @@ object LootyMain {
 
     val grid = new LootGrid
 
-    parseFuture.onComplete((x) => grid.start(items))
+    parseFuture.onComplete { (x) =>
+      console.log(x)
+      grid.start(items)
+    }
 
     //    parseFuture.onComplete {
     //      (x) =>

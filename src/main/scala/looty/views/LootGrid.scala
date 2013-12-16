@@ -40,10 +40,15 @@ class LootGrid() {
       makeColumn("ES")(_.properties.energyShield),
       makeColumn("Life")(_.plusTo.lifeAndMana.life),
       makeColumn("Mana")(_.plusTo.lifeAndMana.mana),
+      makeColumn("+Str")(_.plusTo.attribute.strength),
+      makeColumn("+Dex")(_.plusTo.attribute.dexterity),
+      makeColumn("+Int")(_.plusTo.attribute.intelligence),
       makeColumn("pDps")(_.total.perElementDps(Elements.physical).round),
       makeColumn("fDps")(_.total.perElementDps(Elements.fire).round),
       makeColumn("cDps")(_.total.perElementDps(Elements.cold).round),
-      makeColumn("lDps")(_.total.perElementDps(Elements.lightning).round)
+      makeColumn("lDps")(_.total.perElementDps(Elements.lightning).round),
+      makeColumn("crit")(_.total.critChance)
+
     )
 
     val options = {
@@ -87,8 +92,6 @@ class LootGrid() {
         }
         ret: js.Number
       }
-
-
 
       grid.invalidate()
       grid.render()
