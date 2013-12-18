@@ -5,6 +5,8 @@ import looty.model.{ComputedItem, ItemParser, PoeCacher}
 import looty.poeapi.PoeTypes.Leagues
 import looty.views.LootGrid
 import scala.collection.mutable.ArrayBuffer
+import cgta.ojs
+import scala.scalajs.js.annotation.JSName
 
 
 //////////////////////////////////////////////////////////////
@@ -80,40 +82,19 @@ object LootyMain {
   //    *  foo.arr(10) = 13    ~~> foo.selectDynamic("arr").update(10, 13)
   //    *  foo.arr(10)         ~~> foo.applyDynamic("arr")(10)
 
-  import scala.language.dynamics
-  class JsObjectBuilder extends Dynamic {
-    def applyDynamicNamed[A](name: String)(args: (String, js.Any)*): A = {
-      if (name != "apply") {
-        sys.error("Call jsObj like this jsObj(x=1, y=2) which returns a javascript object that is {x:1,y:2}")
-      }
-      val obj = js.Object().asInstanceOf[js.Dictionary]
-      args.foreach { case (name, value) =>
-        obj(name) = value
-      }
-      obj.asInstanceOf[A]
-    }
-    //Allows for jsObj()
-    def applyDynamic[A](name: String)(args: Nothing*) = {
-      if (args.nonEmpty) {
-        sys.error("Call jsObj only with named parameters.")
-      }
-      js.Object().asInstanceOf[A]
-    }
-  }
-  val jsObj = new JsObjectBuilder
-  def jsArr(xs: js.Any*) = js.Array(xs: _*)
 
   def tryJsObj() {
+    val o = ojs.obj
     console.log("Begin Main!")
-    val foo = jsObj(
+    val foo = ojs.obj(
       x = 5,
       y = 5,
-      zs = js.Array(1, 2, 3),
-      foo = jsObj(
+      zs = ojs.arr(1, 2, 3),
+      foo = ojs.obj(
         b = 6,
         c = 7)
     )
-    console.log(jsObj())
+    console.log(o())
     console.log(JSON.stringify(foo))
     //Prints {"x":5,"y":5,"zs":[1,2,3],"foo":{"b":6,"c":7}}
 
@@ -124,17 +105,19 @@ object LootyMain {
     //a macro, howevr i think a better approach would
     //be to do it as part of the actual ScalaJs backend.
     //using the new keyword.
-  }
-
-  def main(args: Array[String]) {
-        tryJsObj()
-    //    loadLooty()
 
     val xs = ArrayBuffer[Int](1, 2, 3, 4, 5, 6)
     val ys: js.Array[js.Number] = xs.map(x => x: js.Number).toArray[js.Number]: js.Array[js.Number]
     console.log(ys)
     console.log(Point(1, 3))
-    console.log(jsObj[JsPoint](x = 1, y = 2).magnitude)
+    console.log(ojs.obj[JsPoint](x = 1, y = 2).magnitude)
+  }
+
+
+
+  def main(args: Array[String]) {
+    //tryJsObj()
+    //    loadLooty()
   }
 
 }

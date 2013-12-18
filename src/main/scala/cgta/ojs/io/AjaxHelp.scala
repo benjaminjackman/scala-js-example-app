@@ -1,9 +1,9 @@
-package cgta.cjs
+package cgta.ojs
 package io
 
 import org.scalajs.jquery.{JQueryAjaxSettings, JQueryStatic}
 import scala.scalajs.js
-import cgta.cjs.lang.{JsFuture, JsPromise}
+import cgta.ojs.lang.{JsFuture, JsPromise}
 import scala.concurrent.Future
 
 //////////////////////////////////////////////////////////////

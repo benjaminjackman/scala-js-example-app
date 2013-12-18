@@ -1,4 +1,4 @@
-package cgta.cjs
+package cgta.ojs
 package examples
 
 import scala.scalajs.js

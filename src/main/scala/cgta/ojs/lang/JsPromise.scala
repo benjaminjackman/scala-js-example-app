@@ -1,4 +1,4 @@
-package cgta.cjs
+package cgta.ojs
 package lang
 
 import scala.util.{Failure, Success, Try}

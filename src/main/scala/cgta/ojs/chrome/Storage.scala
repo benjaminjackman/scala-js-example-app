@@ -1,10 +1,10 @@
-package cgta.cjs
+package cgta.ojs
 package chrome
 
 import scala.scalajs.js.annotation.JSName
 import scala.scalajs.js
 import scala.concurrent.Future
-import cgta.cjs.lang.JsPromise
+import cgta.ojs.lang.JsPromise
 
 
 //////////////////////////////////////////////////////////////

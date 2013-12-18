@@ -1,6 +1,7 @@
 package cgta
 
-import cgta.cjs.lang.CjsDsl
+import cgta.ojs.lang.{JsObjectBuilder, OJsDsl}
+import scala.scalajs.js
 
 //////////////////////////////////////////////////////////////
 // Copyright (c) 2013 Ben Jackman, Jeff Gomberg
@@ -11,4 +12,7 @@ import cgta.cjs.lang.CjsDsl
 //////////////////////////////////////////////////////////////
 
 
-package object cjs extends CjsDsl
+package object ojs extends OJsDsl {
+  val obj = new JsObjectBuilder
+  def arr(xs: js.Any*) = js.Array(xs: _*)
+}

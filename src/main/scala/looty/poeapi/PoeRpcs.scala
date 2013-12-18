@@ -5,8 +5,8 @@ import scala.scalajs.js
 import org.scalajs.jquery.JQueryStatic
 import scala.concurrent.Future
 import scala.collection.immutable
-import cgta.cjs.lang.{JsFuture, JsPromise}
-import cgta.cjs.io.AjaxHelp
+import cgta.ojs.lang.{JsFuture, JsPromise}
+import cgta.ojs.io.AjaxHelp
 import scala.util.{Failure, Success}
 
 

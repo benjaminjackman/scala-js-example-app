@@ -1,4 +1,4 @@
-package cgta.cjs
+package cgta.ojs
 package lang
 
 import scala.scalajs.js
@@ -14,12 +14,16 @@ import scala.concurrent.Future
 //////////////////////////////////////////////////////////////
 
 
-trait CjsDsl extends JsExtensions {
+trait OJsDsl extends JsExtensions {
 
-  def global = js.Dynamic.global
-  def console = global.console.asInstanceOf[JsConsole]
-  def JSON = global.JSON
+  val global = js.Dynamic.global
+  val console = global.console.asInstanceOf[JsConsole]
+  val JSON = global.JSON
+  val undefined = global.undefined
+
   def newObject = js.Object().asInstanceOf[js.Dynamic]
+
+
 
   //Converts a callback style into a future
   //el.on("click", (x) => console.log(x))

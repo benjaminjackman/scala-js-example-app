@@ -2,7 +2,7 @@ package looty
 package poeapi
 
 import scala.scalajs.js
-import cgta.cjs.lang.Optional
+import cgta.ojs.lang.Optional
 
 
 //////////////////////////////////////////////////////////////

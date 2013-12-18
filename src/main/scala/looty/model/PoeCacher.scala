@@ -2,10 +2,10 @@ package looty
 package model
 
 import looty.poeapi.PoeRpcs
-import cgta.cjs.chrome.Storage
+import cgta.ojs.chrome.Storage
 import scala.concurrent.Future
 import looty.poeapi.PoeTypes.{Leagues, StashTab, StashTabInfos, Inventory, Characters}
-import cgta.cjs.lang.JsFuture
+import cgta.ojs.lang.JsFuture
 import scala.scalajs.js
 
 
