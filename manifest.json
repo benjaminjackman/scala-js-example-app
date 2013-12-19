@@ -7,14 +7,14 @@
 
   "app": {
     "launch": {
-      "local_path": "index-dev.html",
+      "local_path": "looty-dev.html",
       "container": "tab"
     }
   },
 
   "icons" : {
-      "16" : "/src/main/resources/images/coin16.png",
-      "128" : "/src/main/resources/images/coin128.png"
+      "16" : "images/coin16.png",
+      "128" : "images/coin128.png"
     },
 
   "update_url": "https://raw.github.com/benjaminjackman/looty/master/looty-updates.xml",

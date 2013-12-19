@@ -13,7 +13,7 @@ import scala.scalajs.js
 //////////////////////////////////////////////////////////////
 
 
-object AffixParsers {
+object AffixesParser {
   def parse(item: ComputedItem, s: js.String): Boolean = {
     var parsed = false
     all.toList.foreach { parser =>

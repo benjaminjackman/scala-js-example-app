@@ -59,7 +59,6 @@ object LootyMain {
     val grid = new LootGrid
 
     parseFuture.onComplete { (x) =>
-      console.log(x)
       grid.start(items)
     }
 

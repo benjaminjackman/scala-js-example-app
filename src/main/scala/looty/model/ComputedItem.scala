@@ -87,6 +87,11 @@ class ComputedItem(val item: AnyItem) extends {
     var enemyStunThreshold    = 0.0
   }
 
+  object requirements {
+    var level = 0.0
+    var attribute = Attributes.mutable(0.0)
+  }
+
   val damages = Elements of MinMaxDamage(0, 0)
 
   object plusTo {
@@ -127,7 +132,7 @@ class ComputedItem(val item: AnyItem) extends {
     val perElementDps = Elements calculatedWith { element =>
       properties.damages(element).avg * properties.attacksPerSecond
     }
-    def critChance = (100 + increased.globalCriticalStrikeChance + increased.criticalStrikeChance) / 100.0 *
+    def critChance = (100 + increased.globalCriticalStrikeChance) / 100.0 *
         properties.criticalStrikeChance
   }
 

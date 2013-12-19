@@ -9,9 +9,9 @@ object Build extends sbt.Build {
     val log = streams.value.log
 
     //Copy over the html files, while filling in the template sections
-    val htmlSrcDir: File = ((sourceDirectory in Compile).value / "html")
+    val htmlSrcDir: File = (sourceDirectory in Compile).value / "html"
     val htmlSrcs: PathFinder = htmlSrcDir * "*.template.html"
-    val outDir: File = (target in Compile).value
+    val outDir: File = (crossTarget in Compile).value
     val outMappings = htmlSrcs x Path.rebase(htmlSrcDir, outDir)
     outMappings.flatMap { case (in, out0) =>
       val content = IO.read(in)
@@ -22,30 +22,32 @@ object Build extends sbt.Build {
       val devFile = outDir / (basename + "-dev.html")
       val releaseFile = outDir / (basename + ".html")
 
-      val devScripts = """<script type="text/javascript" src="./target/scala-2.10/example-extdeps.js"></script>
-                                  |<script type="text/javascript" src="./target/scala-2.10/example-intdeps.js"></script>
-                                  |<script type="text/javascript" src="./target/scala-2.10/example.js"></script>""".stripMargin
+      val devScripts = """<script type="text/javascript" src="example-extdeps.js"></script>
+                                  |<script type="text/javascript" src="example-intdeps.js"></script>
+                                  |<script type="text/javascript" src="example.js"></script>""".stripMargin
 
-      val releaseScripts = """<script type="text/javascript" src="./target/scala-2.10/example-opt.js"></script>"""
+      val releaseScripts = """<script type="text/javascript" src="example-opt.js"></script>"""
 
       val devOut = content.replace("<!-- insert scalajs -->", devScripts)
       val releaseOut = content.replace("<!-- insert scalajs -->", releaseScripts)
 
-      log.info("Writing html file: " + devFile + " & " + releaseFile)
       IO.write(devFile, devOut.getBytes("UTF-8"))
       IO.write(releaseFile, releaseOut.getBytes("UTF-8"))
       List(devFile, releaseFile)
+
     }
+    Seq[File]()
   }
 
-  val copyJsLib = Def.task {
-    val log = streams.value.log
+  val copyAll = Def.task {
+    val outDir = (crossTarget in Compile).value
 
-    val jslibSrcDir: File = (baseDirectory in Compile).value
-
-    log.warn(""+jslibSrcDir.toPath)
+    IO.copyFile((baseDirectory in Compile).value / "manifest.json", outDir / "manifest.json")
+    IO.copyDirectory((resourceDirectory in Compile).value / "images", outDir / "images")
+    IO.copyDirectory((baseDirectory in Compile).value / "jslib", outDir / "jslib")
 
     Seq[File]()
+
   }
 
 
@@ -63,7 +65,7 @@ object Build extends sbt.Build {
         libraryDependencies += compilerPlugin("org.scala-lang.plugins" % "continuations" % scalaVersion.value),
         scalacOptions += "-P:continuations:enable",
         resourceGenerators in Compile <+= generateHtml,
-        resourceGenerators in Compile <+= copyJsLib
+        resourceGenerators in Compile <+= copyAll
       ).dependsOn(Libs.dom, Libs.jQuery)
 
   object Libs {

@@ -121,7 +121,7 @@ object PoeTypes {
     val typeLine     : js.String
     val identified   : js.Boolean
     val properties   : Optional[js.Array[ItemProperty]]
-    val requirements : js.Array[ItemRequirement]
+    val requirements : Optional[js.Array[ItemRequirement]]
     val descrText    : Optional[js.String]
     val secDescrText : Optional[js.String]
     val explicitMods : Optional[js.Array[js.String]]

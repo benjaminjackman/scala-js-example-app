@@ -33,6 +33,7 @@ class LootGrid() {
       makeColumn("loc")(_.location),
       makeColumn("name")(_.item.name),
       makeColumn("typeName")(_.typeName),
+      makeColumn("lvl")(_.requirements.level),
       makeColumn("score")(_.score.score),
       makeColumn("dps")(_.total.dps.round),
       makeColumn("aps")(_.properties.attacksPerSecond),

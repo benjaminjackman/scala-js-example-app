@@ -36,7 +36,7 @@ object ItemParser {
       emods <- mods
       mod: js.String <- emods
     } {
-      if (!AffixParsers.parse(ci, mod) && ci.item.getFrameType =!= FrameTypes.unique) {
+      if (!AffixesParser.parse(ci, mod) && ci.item.getFrameType =!= FrameTypes.unique) {
         console.log("Unable to parse affix", ci.item.getFrameType.name, ci.item.name, "->", mod)
       }
     }
@@ -57,7 +57,9 @@ object ItemParser {
   }
 
   def parseRequirements(ci: ComputedItem) {
-
+    for (requirements <- ci.item.requirements.toOption) {
+      RequirementsParser.parse(ci, requirements)
+    }
   }
 
   def parseTypeLine(ci: ComputedItem) {
