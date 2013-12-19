@@ -6,7 +6,6 @@ import looty.poeapi.PoeTypes.Leagues
 import looty.views.LootGrid
 import scala.collection.mutable.ArrayBuffer
 import cgta.ojs
-import scala.scalajs.js.annotation.JSName
 
 
 //////////////////////////////////////////////////////////////
@@ -117,7 +116,7 @@ object LootyMain {
 
   def main(args: Array[String]) {
     //tryJsObj()
-    //    loadLooty()
+    loadLooty()
   }
 
 }
