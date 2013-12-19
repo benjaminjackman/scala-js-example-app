@@ -45,6 +45,7 @@ class ComputedItem(val item: AnyItem) extends {
     else if (slots.isBoots) "Boots"
     else if (slots.isBelt) "Belt"
     else if (slots.isShield) "Shield"
+    else if (slots.isQuiver) "Quiver"
     else if (slots.isFlask) "Flask"
     else if (slots.isWeapon) properties.weaponType.toShortString
     else if (item.isCurrency) "Currency"
@@ -88,15 +89,16 @@ class ComputedItem(val item: AnyItem) extends {
   }
 
   object requirements {
-    var level = 0.0
+    var level     = 0.0
     var attribute = Attributes.mutable(0.0)
   }
 
   val damages = Elements of MinMaxDamage(0, 0)
 
   object plusTo {
-    val attribute      = Attributes mutable 0.0
-    val resistance     = Elements mutable 0.0
+    val attribute  = Attributes mutable 0.0
+    val resistance = Elements mutable 0.0
+    def totalResistance = resistance.all.sum
     val lifeAndMana    = LifeAndMana mutable 0.0
     var accuracyRating = 0.0
     var evasionRating  = 0.0

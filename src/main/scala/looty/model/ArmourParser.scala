@@ -59,6 +59,7 @@ object ArmourParser {
         ci.slots.isShield = true
         true
       } else {
+        console.error("2x2 Unknown", ci)
         false
       }
     } else if (ci.item.h =?= (3: js.Number) && ci.item.w =?= (2: js.Number)) {
@@ -72,6 +73,7 @@ object ArmourParser {
         ci.slots.isQuiver = true
         true
       } else {
+        console.error("3x2 Unknown", ci)
         false
       }
     } else if (ci.item.h =?= (4: js.Number) && ci.item.w =?= (2: js.Number)) {
@@ -79,9 +81,11 @@ object ArmourParser {
         ci.slots.isShield = true
         true
       } else {
+        console.error("4x2 Unknown", ci)
         false
       }
     } else {
+      console.error("Unknown", ci)
       false
     }
 
