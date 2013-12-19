@@ -26,6 +26,7 @@ object ItemParser {
       parseProperties(ci)
       parseRequirements(ci)
       parseTypeLine(ci)
+      parseSockets(ci)
     }
     ci
   }
@@ -65,6 +66,12 @@ object ItemParser {
   def parseTypeLine(ci: ComputedItem) {
     if (ci.isEquippable && !ci.slots.isWeapon && !ci.slots.isFlask && !ArmourParser.parse(ci, ci.item.typeLine) ) {
       console.log("Unable to parse typeline", ci.item.getFrameType.name, ci.item.typeLine, ci.item.name, ci.item)
+    }
+  }
+
+  def parseSockets(ci : ComputedItem) {
+    if (ci.isEquippable) {
+      SocketsParser.parse(ci)
     }
   }
 }

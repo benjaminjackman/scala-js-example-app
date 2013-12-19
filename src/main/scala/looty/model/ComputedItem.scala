@@ -29,7 +29,7 @@ case class MinMaxDamage(var min: Double, var max: Double) {
 
 class ComputedItem(val item: AnyItem) extends {
 
-  lazy val maxLinks: Int = item.sockets.toList.map(_.group).groupBy(x => x).map(_._2.size).maxOpt.getOrElse(0)
+  lazy val maxLinks: Int = item.sockets.toOption.map(_.toList.map(_.group).groupBy(x => x).map(_._2.size).maxOpt.getOrElse(0)).getOrElse(0)
   def maxResist = plusTo.resistance.all.max
   lazy val score: ItemScore = ItemScorer(this).getOrElse(ItemScore(Nil, 0))
 
@@ -87,6 +87,8 @@ class ComputedItem(val item: AnyItem) extends {
     var attributeRequirements = 0.0
     var enemyStunThreshold    = 0.0
   }
+
+  var sockets : List[List[String]] = Nil
 
   object requirements {
     var level     = 0.0

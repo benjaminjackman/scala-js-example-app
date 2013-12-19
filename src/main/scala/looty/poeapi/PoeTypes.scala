@@ -83,7 +83,7 @@ object PoeTypes {
       val unique   = FrameType(3, "unique")
       val gem      = FrameType(4, "gem")
       val currency = FrameType(5, "currency")
-      val quest = FrameType(6, "quest")
+      val quest    = FrameType(6, "quest")
 
       val all = List(normal, magic, rare, unique, gem, currency, quest)
     }
@@ -116,10 +116,10 @@ object PoeTypes {
     val icon         : js.String
     val support      : js.Boolean
     val league       : js.String
-    val sockets      : js.Array[Socket]
     val name         : js.String
     val typeLine     : js.String
     val identified   : js.Boolean
+    val sockets      : Optional[js.Array[Socket]]
     val properties   : Optional[js.Array[ItemProperty]]
     val requirements : Optional[js.Array[ItemRequirement]]
     val descrText    : Optional[js.String]
@@ -139,6 +139,17 @@ object PoeTypes {
     val socket: Optional[js.Number]
     val colour: Optional[js.String]
 
+  }
+
+  object Socket {
+    implicit class SocketExtensions(val s: Socket) extends AnyVal {
+      def color = s.attr.toString match {
+        case "S" => "R"
+        case "D" => "G"
+        case "I" => "B"
+        case _ => "W"
+      }
+    }
   }
 
   trait Socket extends js.Object {

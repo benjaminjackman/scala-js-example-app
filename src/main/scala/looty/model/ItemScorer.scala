@@ -42,7 +42,7 @@ object ItemScorer {
     //5L+ are an auto +100, implying "never vendor these."
     fscore100("5+ Linked Sockets")(_.maxLinks > 4)
 
-    fscore1("4 Linked Sockets or 5+ sockets")(i => i.maxLinks == 4 || i.item.sockets.size >= 5)
+    fscore1("4 Linked Sockets or 5+ sockets")(i => i.maxLinks == 4 || i.item.sockets.toOption.exists(_.size >= 5))
 
     fscore1("60+ max Life")(_.plusTo.lifeAndMana.life >= 60)
     fscore1("60+ max Mana")(_.plusTo.lifeAndMana.mana >= 40)
