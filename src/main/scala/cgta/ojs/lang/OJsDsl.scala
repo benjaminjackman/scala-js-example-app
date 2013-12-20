@@ -22,7 +22,9 @@ trait OJsDsl extends JsExtensions {
   val undefined = global.undefined
 
   def newObject = js.Object().asInstanceOf[js.Dynamic]
-
+  def jsThis = js.eval("this").asInstanceOf[js.Dynamic]
+  def debugger = js.eval("debugger")
+  def arguments = js.eval("arguments")
 
 
   //Converts a callback style into a future

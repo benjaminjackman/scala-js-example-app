@@ -6,6 +6,7 @@ import looty.poeapi.PoeTypes.Leagues
 import looty.views.LootGrid
 import scala.collection.mutable.ArrayBuffer
 import cgta.ojs
+import org.scalajs.jquery.JQueryStatic
 
 
 //////////////////////////////////////////////////////////////
@@ -62,23 +63,38 @@ object LootyMain {
       grid.start(items)
     }
 
-    //    parseFuture.onComplete {
-    //      (x) =>
-    //        grid.start(items)
-    ////        items.sortBy(-_.score.score).foreach { ci =>
-    ////          console.log(ci.location, ci.score.toString, ci.item.name)
-    ////        }
-    //    }
+  }
+
+  def loadHome() {
+    val jq: JQueryStatic = global.jQuery.asInstanceOf[JQueryStatic]
+    jq("#content").text("Home Page!")
 
   }
 
-  //    *  foo.method("blah")      ~~> foo.applyDynamic("method")("blah")
-  //    *  foo.method(x = "blah")  ~~> foo.applyDynamicNamed("method")(("x", "blah"))
-  //    *  foo.method(x = 1, 2)    ~~> foo.applyDynamicNamed("method")(("x", 1), ("", 2))
-  //    *  foo.field           ~~> foo.selectDynamic("field")
-  //    *  foo.varia = 10      ~~> foo.updateDynamic("varia")(10)
-  //    *  foo.arr(10) = 13    ~~> foo.selectDynamic("arr").update(10, 13)
-  //    *  foo.arr(10)         ~~> foo.applyDynamic("arr")(10)
+  def addRoutes() {
+    val crossroads = global.crossroads
+    val hasher = global.hasher
+    crossroads.addRoute("home", () => loadHome())
+    crossroads.addRoute("grid", () => loadLooty())
+    crossroads.routed.add(global.console.log, console)
+    if(hasher.getURL().toString.endsWith("home")) {
+      hasher.setHash("home")
+    }
+    def parseHash(newHash : js.String, oldHash: js.String) {
+      crossroads.parse(newHash)
+    }
+    hasher.initialized.add(parseHash _)
+    hasher.changed.add(parseHash _)
+    hasher.init()
+  }
+
+
+  def main(args: Array[String]) {
+    //tryJsObj()
+    //loadLooty()
+    addRoutes()
+  }
+
 
 
   def tryJsObj() {
@@ -111,11 +127,5 @@ object LootyMain {
     console.log(ojs.obj[JsPoint](x = 1, y = 2).magnitude)
   }
 
-
-
-  def main(args: Array[String]) {
-    //tryJsObj()
-    loadLooty()
-  }
 
 }
