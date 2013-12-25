@@ -15,14 +15,14 @@ import scala.scalajs.js
 
 object ArmourParser {
   val helmets      = List("Helmet", "Hat", "Sallet", "Crown", "Hood", "Helm", "Mitts", "Circlet", "Bascinet",
-    "Tricorne", "Mask", "Wolf Pelt", "Ursine Pelt", "Burgonet")
-  val gloves       = List("Gauntlets", "Gloves")
+    "Tricorne", "Mask", "Wolf Pelt", "Ursine Pelt", "Burgonet", "Cap", "Cage", "Lion Pelt")
+  val gloves       = List("Gauntlets", "Gloves", "Mitts", "Bracers")
   val boots        = List("Boots", "Greaves", "Slippers", "Shoes")
   val chest        = List("Robe", "Jacket", "Leather", "Plate", "Brigandine", "Chainmail", "Garb", "Vestment",
     "Tunic", "Lamellar", "Ringmail", "Coat", "Silks", "Doublet", "Armour", "Hauberk", "Regalia", "Raiment",
-    "Wyrmscale", "Silken Wrap", "Vest")
+    "Wyrmscale", "Silken Wrap", "Vest", "Jerkin", "Chestplate")
   val spiritShield = List("Spirit Shield")
-  val shield       = List("Buckler", "Shield")
+  val shield       = List("Buckler", "Shield", "Spiked Bundle")
   val quiver       = List("Quiver")
 
   def parse(ci: ComputedItem, typeLine: String): Boolean = {

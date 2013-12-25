@@ -90,7 +90,7 @@ class PoeCacher(account: String = "UnknownAccount!") {
     getStashInfo(league).flatMap { si =>
       JsFuture.sequence {
         si.toList.map { sti =>
-          getStashTab(league, sti.i.toInt).log("Got Stash Tab")
+          getStashTab(league, sti.i.toInt)//.log("Got Stash Tab")
         }
       }
     }

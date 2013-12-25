@@ -45,12 +45,13 @@ object ItemParser {
 
 
   def parseProperties(ci: ComputedItem) {
-    if (!ci.item.isFlask) {
-      for {
-        props <- ci.item.properties.toOption.toList
-        prop <- props
-      } {
-        if (!PropertyParsers.parse(ci, prop)) {
+
+    for {
+      props <- ci.item.properties.toOption.toList
+      prop <- props
+    } {
+      if (!PropertyParsers.parse(ci, prop)) {
+        if (!ci.item.isFlask) {
           console.log("Unable to parse property", ci.item.getFrameType.name, ci.item.name, "->", prop, ci.item)
         }
       }
@@ -64,12 +65,12 @@ object ItemParser {
   }
 
   def parseTypeLine(ci: ComputedItem) {
-    if (ci.isEquippable && !ci.slots.isWeapon && !ci.slots.isFlask && !ArmourParser.parse(ci, ci.item.typeLine) ) {
+    if (ci.isEquippable && !ci.slots.isWeapon && !ci.slots.isFlask && !ArmourParser.parse(ci, ci.item.typeLine)) {
       console.log("Unable to parse typeline", ci.item.getFrameType.name, ci.item.typeLine, ci.item.name, ci.item)
     }
   }
 
-  def parseSockets(ci : ComputedItem) {
+  def parseSockets(ci: ComputedItem) {
     if (ci.isEquippable) {
       SocketsParser.parse(ci)
     }

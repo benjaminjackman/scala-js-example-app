@@ -163,7 +163,12 @@ object AffixesParser {
   increased("Projectile Speed")(_.increased.projectileSpeed += _)
   increased("Accuracy Rating")(_.increased.accuracyRating += _)
   increased("Block Recovery")(_.increased.blockRecovery += _)
-  increased("Elemental Damage")(_.increased.elementalDamage += _)
+  increased("Elemental Damage"){ (i, n) =>
+    i.increased.elementalDamage += n
+    i.increased.damage.fire += n
+    i.increased.damage.cold += n
+    i.increased.damage.lightning += n
+  }
 
   increased("Armour")(_.increased.armour += _)
   increased("Evasion Rating")(_.increased.evasion += _)

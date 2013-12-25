@@ -67,6 +67,12 @@ object PoeTypes {
     val src   : js.String
   }
 
+  object Colour {
+    implicit class ColourExtensions(val c: Colour) extends AnyVal {
+      def toRgb = s"rgb(${c.r},${c.g},${c.b})"
+    }
+  }
+
   trait Colour extends js.Object {
     val r: js.Number
     val g: js.Number

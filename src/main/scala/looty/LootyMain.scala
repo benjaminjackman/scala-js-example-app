@@ -1,9 +1,7 @@
 package looty
 
 import scala.scalajs.js
-import looty.model.{ComputedItem, ItemParser, PoeCacher}
-import looty.poeapi.PoeTypes.Leagues
-import looty.views.LootGrid
+import looty.views.{RefreshView, LootGrid}
 import scala.collection.mutable.ArrayBuffer
 import cgta.ojs
 import org.scalajs.jquery.JQueryStatic
@@ -29,46 +27,17 @@ case class Point(x: Int, y: Int)
 object LootyMain {
 
   def loadLooty() {
-    val items = new js.Array[ComputedItem]()
-
-    val pc = new PoeCacher()
-
-    val parseFuture = for {
-      tabInfos <- pc.getStashInfo(Leagues.Standard)
-      tabs <- pc.getAllStashTabs(Leagues.Standard)
-      invs <- pc.getAllInventories(Leagues.Standard)
-    } yield {
-      for {
-        (tab, i) <- tabs.zipWithIndex
-        item <- tab.items
-      } {
-        val ci = ItemParser.parseItem(item)
-        ci.location = tabInfos(i).n
-        items.push(ci)
-      }
-
-      for {
-        (char, inv) <- invs
-        item <- inv.items
-      } {
-        val ci = ItemParser.parseItem(item)
-        ci.location = char
-        items.push(ci)
-      }
-    }
-
     val grid = new LootGrid
-
-    parseFuture.onComplete { (x) =>
-      grid.start(items)
-    }
-
+    grid.start()
   }
 
   def loadHome() {
     val jq: JQueryStatic = global.jQuery.asInstanceOf[JQueryStatic]
     jq("#content").text("Home Page!")
+  }
 
+  def loadRefresh() {
+    new RefreshView().start()
   }
 
   def addRoutes() {
@@ -76,6 +45,7 @@ object LootyMain {
     val hasher = global.hasher
     crossroads.addRoute("home", () => loadHome())
     crossroads.addRoute("grid", () => loadLooty())
+    crossroads.addRoute("refresh", () => loadRefresh())
     crossroads.routed.add(global.console.log, console)
     if(hasher.getURL().toString.endsWith("home")) {
       hasher.setHash("home")

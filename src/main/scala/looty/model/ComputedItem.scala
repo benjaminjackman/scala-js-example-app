@@ -3,6 +3,7 @@ package model
 
 import looty.poeapi.PoeTypes.AnyItem
 import looty.model.WeaponTypes.WeaponType
+import scala.scalajs.js
 
 
 //////////////////////////////////////////////////////////////
@@ -26,14 +27,30 @@ case class MinMaxDamage(var min: Double, var max: Double) {
   }
 }
 
+//object ComputedItem {
+//  implicit class ComputedItemExtensions(val item : ComputedItem) extends AnyVal {
+//
+//  }
+//
+//  def apply(item : AnyItem) : ComputedItem = {
+//    ???
+//  }
+//}
 
-class ComputedItem(val item: AnyItem) extends {
+class ComputedItem(val item: AnyItem) {
+  lazy val maxLinks: Int       = item.sockets.toOption.map(_.toList.map(_.group).groupBy(x => x).map(_._2.size).maxOpt.getOrElse(0)).getOrElse(0)
+  lazy val score   : ItemScore = ItemScorer(this).getOrElse(ItemScore(Nil, 0))
 
-  lazy val maxLinks: Int = item.sockets.toOption.map(_.toList.map(_.group).groupBy(x => x).map(_._2.size).maxOpt.getOrElse(0)).getOrElse(0)
   def maxResist = plusTo.resistance.all.max
-  lazy val score: ItemScore = ItemScorer(this).getOrElse(ItemScore(Nil, 0))
+  def magicFind = increased.quantityOfItemsFound + increased.rarityOfItemsFound
 
   def isEquippable = !item.isGem && !item.isCurrency && !item.isMap && !item.isQuest
+
+  def displayName = {
+    var n = item.name
+    if (n.nullSafe.isEmpty || n.isEmpty) n = item.typeLine
+    n
+  }
 
   var location = ""
   def typeName = {
@@ -88,7 +105,7 @@ class ComputedItem(val item: AnyItem) extends {
     var enemyStunThreshold    = 0.0
   }
 
-  var sockets : List[List[String]] = Nil
+  var sockets: List[List[String]] = Nil
 
   object requirements {
     var level     = 0.0
@@ -126,15 +143,17 @@ class ComputedItem(val item: AnyItem) extends {
       bow += n
       any += n
     }
-    def total = {
-      element.all.sum + attribute.all.sum + melee + minion + bow + any
-    }
+    def max = (List(melee, minion, bow) ::: attribute.all ::: element.all).max
   }
 
   object total {
     def dps: Double = perElementDps.all.sum
     val perElementDps = Elements calculatedWith { element =>
-      properties.damages(element).avg * properties.attacksPerSecond
+      properties.damages(element).avg * {
+        var x = properties.attacksPerSecond
+        if (x == 0.0) x = 1.0
+        x
+      }
     }
     def critChance = (100 + increased.globalCriticalStrikeChance) / 100.0 *
         properties.criticalStrikeChance
@@ -145,7 +164,6 @@ class ComputedItem(val item: AnyItem) extends {
     def is2H: Boolean = properties.weaponType.is2H
     def isWeapon: Boolean = properties.weaponType.isWeapon
     def isFlask = item.isFlask
-    //TODO Fix this!
     var isSpiritShield = false
     var isShield       = false
 
@@ -178,7 +196,6 @@ class ComputedItem(val item: AnyItem) extends {
   val regeneratedPerSecond = LifeAndMana mutable 0.0
 
   object flask {
-
     object increased {
       var lifeRecoveryRate   = 0.0
       var effectDuration     = 0.0
