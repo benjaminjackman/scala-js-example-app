@@ -20,6 +20,7 @@ class TypeAExtensions[A](val a: A) extends AnyVal {
   def nullSafe: Option[A] = if (a == null || a.isInstanceOf[js.Undefined]) None else Some(a)
   def =?=[B](b: B)(implicit e: B =:= A) = a == b
   def =!=[B](b: B)(implicit e: B =:= A) = a != b
+  def toJs(implicit aToJs : A => js.Any) : js.Any = aToJs(a)
 }
 
 class JsAnyExtensions(val a: js.Any) extends AnyVal {
@@ -28,6 +29,7 @@ class JsAnyExtensions(val a: js.Any) extends AnyVal {
   def toJsObj: js.Object = a.asInstanceOf[js.Object]
   def toJsDyn: js.Dynamic = a.asInstanceOf[js.Dynamic]
   def toJsStr: js.String = a.asInstanceOf[js.String]
+  def toJsNum: js.Number= a.asInstanceOf[js.Number]
 }
 
 class JsFutureExtensions[A](val f: Future[A]) extends AnyVal {

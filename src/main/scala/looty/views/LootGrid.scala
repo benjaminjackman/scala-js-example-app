@@ -17,9 +17,10 @@ import looty.poeapi.PoeTypes.Leagues
 
 
 class LootGrid() {
-  val jq   : JQueryStatic           = global.jQuery.asInstanceOf[JQueryStatic]
-  var grid : js.Dynamic             = null
-  var items: js.Array[ComputedItem] = null
+  val jq          : JQueryStatic           = global.jQuery.asInstanceOf[JQueryStatic]
+  var grid        : js.Dynamic             = null
+  var displayItems: js.Array[ComputedItem] = null
+  var allItems    : js.Array[ComputedItem] = null
 
 
   def start() {
@@ -31,8 +32,10 @@ class LootGrid() {
       tabs <- pc.getAllStashTabs(Leagues.Standard)
       invs <- pc.getAllInventories(Leagues.Standard)
     } yield {
+
+      //TODO Remove take1
       for {
-        (tab, i) <- tabs.zipWithIndex
+        (tab, i) <- tabs.zipWithIndex.take(1)
         item <- tab.items
       } {
         val ci = ItemParser.parseItem(item)
@@ -40,8 +43,9 @@ class LootGrid() {
         items.push(ci)
       }
 
+      //TODO Remove take1
       for {
-        (char, inv) <- invs
+        (char, inv) <- invs.take(1)
         item <- inv.items
       } {
 
@@ -50,19 +54,23 @@ class LootGrid() {
         items.push(ci)
       }
 
-      setItems(items)
+      this.displayItems = items
+      this.allItems = items
+
+      setHtml()
     }
 
     fut.log()
   }
 
-  private def setItems(items: js.Array[ComputedItem]) {
+  private def setHtml() {
     val el = jq("#content")
     el.empty()
     el.append("""<div id="controls"></div>""")
     el.append("""<div id="grid"></div>""")
+    el.append("""<div id="itemdetail" style="z-index:100;color:white;background-color:black;opacity:.9;display:none;position:fixed;left:50px;top:100px">SAMPLE DATA<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a</div>""")
     appendControls()
-    appendGrid(items)
+    appendGrid(displayItems)
 
   }
   private def appendControls() {
@@ -84,7 +92,7 @@ class LootGrid() {
           st <- pc.Net.getStashTabAndStore(Leagues.Standard, sti.i.toInt)
         } {
           val pc = new PoeCacher()
-          items = new js.Array[ComputedItem]()
+          val items = new js.Array[ComputedItem]()
           for {
             item <- st.items
           } {
@@ -92,8 +100,9 @@ class LootGrid() {
             ci.location = sti.n
             items.push(ci)
           }
+          displayItems = items
           console.log(items(0))
-          grid.setData(items)
+          grid.setData(displayItems)
           grid.invalidate()
           grid.render()
         }
@@ -104,8 +113,8 @@ class LootGrid() {
   }
 
   private def appendGrid(items0: js.Array[ComputedItem]) {
-    items = items0
-    def makeColumn(name: String,tooltip: String)(f: ComputedItem => js.Any) = {
+    displayItems = items0
+    def makeColumn(name: String, tooltip: String)(f: ComputedItem => js.Any) = {
       val o = newObject
       o.id = name
       o.name = name
@@ -132,8 +141,9 @@ class LootGrid() {
       o
     }
 
-    grid = js.Dynamic.newInstance(global.Slick.Grid)("#grid", items, columns, options)
+    grid = js.Dynamic.newInstance(global.Slick.Grid)("#grid", displayItems, columns, options)
     addSort()
+    addMouseover()
     def resize() {
       jq("#grid").css("height", global.window.innerHeight - 120)
       grid.resizeCanvas()
@@ -148,7 +158,7 @@ class LootGrid() {
     grid.onSort.subscribe((e: js.Dynamic, args: js.Dynamic) => {
       val cols = args.sortCols.asInstanceOf[js.Array[js.Dynamic]]
 
-      items.sort { (a: ComputedItem, b: ComputedItem) =>
+      displayItems.sort { (a: ComputedItem, b: ComputedItem) =>
         var i = 0
         var ret = 0.0
         while (i < cols.length && ret == 0) {
@@ -176,6 +186,47 @@ class LootGrid() {
 
       grid.invalidate()
       grid.render()
+    })
+  }
+
+  def showItemDetail(top: Option[js.Number],
+    right: Option[js.Number],
+    bottom: Option[js.Number],
+    left: Option[js.Number],
+    item: ComputedItem) {
+    val d = jq("#itemdetail")
+    d.show()
+    d.css("top", top.getOrElse("".toJs))
+    d.css("right", right.getOrElse("".toJs))
+    d.css("bottom", bottom.getOrElse("".toJs))
+    d.css("left", left.getOrElse("".toJs))
+    console.log(item)
+
+  }
+
+  private def addMouseover() {
+    grid.onMouseEnter.subscribe((e: js.Dynamic, args: js.Any) => {
+      val row = grid.getCellFromEvent(e).row
+      if (row.nullSafe.isDefined) {
+        val (top, bottom) = if (e.clientY / global.window.innerHeight < .5) {
+          console.error("PAD FOR SCROLL SO IT DOWS NOT FDALL ON MOUSE")
+          Some(e.clientY.toJsNum+10) -> None
+        } else {
+          None -> Some(global.window.innerHeight - e.clientY)
+        }
+
+        val (right, left) = if (e.clientX / global.window.innerWidth < .5) {
+          None -> Some(e.clientX.toJsNum+10)
+        } else {
+          Some(global.window.innerWidth - e.clientX) -> None
+        }
+
+        val item = grid.getDataItem(row).asInstanceOf[ComputedItem]
+        showItemDetail(top, right, bottom, left, item)
+      }
+    })
+    grid.onMouseLeave.subscribe((e: js.Dynamic, args: js.Any) => {
+      jq("#itemdetail").hide()
     })
   }
 }

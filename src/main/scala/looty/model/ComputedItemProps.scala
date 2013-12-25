@@ -84,16 +84,16 @@ object ComputedItemProps {
   case object Dps_Physical extends ComputedItemPropPosNumber("pDps",
     "Physical damage per second, or Avg Physical Damage for non weapon items")(_.total.perElementDps.physical.round)
   add(Dps_Physical)
-  case object Dps_Fire extends ComputedItemPropPosNumber("pDps",
+  case object Dps_Fire extends ComputedItemPropPosNumber("fDps",
     "Fire damage per second, or Avg Fire Damage for non weapon items")(_.total.perElementDps.fire.round)
   add(Dps_Fire)
-  case object Dps_Cold extends ComputedItemPropPosNumber("pDps",
+  case object Dps_Cold extends ComputedItemPropPosNumber("cDps",
     "Cold damage per second, or Avg Cold Damage for non weapon items")(_.total.perElementDps.cold.round)
   add(Dps_Cold)
-  case object Dps_Lightning extends ComputedItemPropPosNumber("pDps",
+  case object Dps_Lightning extends ComputedItemPropPosNumber("lDps",
     "Lightning damage per second, or Avg Lightning Damage for non weapon items")(_.total.perElementDps.lightning.round)
   add(Dps_Lightning)
-  case object Dps_Chaos extends ComputedItemPropPosNumber("pDps",
+  case object Dps_Chaos extends ComputedItemPropPosNumber("xDps",
     "Chaos damage per second, or Avg Chaos Damage for non weapon items")(_.total.perElementDps.chaos.round)
   add(Dps_Chaos)
 
