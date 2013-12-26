@@ -1,7 +1,8 @@
 package looty
-package model
+package model.parsers
 
 import scala.scalajs.js
+import looty.model.ComputedItem
 
 
 //////////////////////////////////////////////////////////////

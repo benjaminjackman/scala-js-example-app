@@ -23,9 +23,6 @@ trait OJsDsl extends JsExtensions {
 
   def newObject = js.Object().asInstanceOf[js.Dynamic]
   def debugger = js.eval("debugger")
-//  def jsThis = js.eval("this").asInstanceOf[js.Dynamic]
-//  def arguments = js.eval("arguments")
-
 
   //Converts a callback style into a future
   //el.on("click", (x) => console.log(x))

@@ -3,8 +3,9 @@ package views
 
 import org.scalajs.jquery.JQueryStatic
 import scala.scalajs.js
-import looty.model.{ComputedItemProps, ItemParser, PoeCacher, ComputedItem}
+import looty.model.{ComputedItemProps, PoeCacher, ComputedItem}
 import looty.poeapi.PoeTypes.Leagues
+import looty.model.parsers.ItemParser
 
 
 //////////////////////////////////////////////////////////////

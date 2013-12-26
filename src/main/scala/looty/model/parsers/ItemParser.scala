@@ -1,9 +1,10 @@
 package looty
-package model
+package model.parsers
 
 import looty.poeapi.PoeTypes.AnyItem
 import scala.scalajs.js
 import looty.poeapi.PoeTypes.AnyItem.FrameTypes
+import looty.model.ComputedItem
 
 
 //////////////////////////////////////////////////////////////

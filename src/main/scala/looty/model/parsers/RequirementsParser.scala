@@ -1,8 +1,9 @@
 package looty
-package model
+package model.parsers
 
 import looty.poeapi.PoeTypes.ItemRequirement
 import scala.scalajs.js
+import looty.model.ComputedItem
 
 
 //////////////////////////////////////////////////////////////

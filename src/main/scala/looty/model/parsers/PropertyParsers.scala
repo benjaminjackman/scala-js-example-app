@@ -1,8 +1,9 @@
 package looty
-package model
+package model.parsers
 
 import scala.scalajs.js
 import looty.poeapi.PoeTypes.ItemProperty
+import looty.model.{Elements, WeaponTypes, MinMaxDamage, ComputedItem}
 
 
 //////////////////////////////////////////////////////////////

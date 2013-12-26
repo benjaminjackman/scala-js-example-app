@@ -1,5 +1,7 @@
-package looty.model
+package looty
+package model.parsers
 
+import looty.model.ComputedItem
 
 //////////////////////////////////////////////////////////////
 // Copyright (c) 2013 Ben Jackman, Jeff Gomberg
