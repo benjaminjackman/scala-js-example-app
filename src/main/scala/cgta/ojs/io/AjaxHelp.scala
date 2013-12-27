@@ -36,4 +36,6 @@ object AjaxHelp {
       jQuery.ajax(req.asInstanceOf[JQueryAjaxSettings])
     }
   }
+
+  def get[A](url : String): Future[A] = apply(url, HttpRequestTypes.Get, None)
 }

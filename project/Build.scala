@@ -42,8 +42,9 @@ object Build extends sbt.Build {
   val copyAll = Def.task {
     val outDir = (crossTarget in Compile).value
 
-    IO.copyFile((baseDirectory in Compile).value / "manifest.json", outDir / "manifest.json")
+    IO.copyFile((resourceDirectory in Compile).value / "manifest.json", outDir / "manifest.json")
     IO.copyDirectory((resourceDirectory in Compile).value / "images", outDir / "images")
+    IO.copyDirectory((resourceDirectory in Compile).value / "data", outDir / "data")
     IO.copyDirectory((baseDirectory in Compile).value / "jslib", outDir / "jslib")
 
     Seq[File]()

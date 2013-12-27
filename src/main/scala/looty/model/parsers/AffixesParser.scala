@@ -24,8 +24,9 @@ object AffixesParser {
   }
 
   private val _all = new js.Array[AffixParser]()
-  def add(affix: AffixParser) {
+  def add(affix: AffixParser): AffixParser = {
     _all.push(affix)
+    affix
   }
 
 
@@ -70,7 +71,7 @@ object AffixesParser {
   }
 
 
-  def regex1(regex: js.String)(f: (ComputedItem, Double) => Unit) {
+  def regex1(regex: js.String)(f: (ComputedItem, Double) => Unit) = {
     val r = regex
     add {
       new RegexAffixParser1() {
@@ -93,7 +94,7 @@ object AffixesParser {
     def process(i: ComputedItem, x: Double, y: Double)
   }
 
-  def regex2(regex: js.String)(f: (ComputedItem, Double, Double) => Unit) {
+  def regex2(regex: js.String)(f: (ComputedItem, Double, Double) => Unit) = {
     val r = regex
     add {
       new RegexAffixParser2() {
@@ -104,25 +105,25 @@ object AffixesParser {
   }
 
 
-  def increased(name: js.String)(f: (ComputedItem, Double) => Unit) { regex1(s"^([.+-\\d]+)%* increased $name$$")(f) }
-  def reduced(name: js.String)(f: (ComputedItem, Double) => Unit) { regex1(s"^([.+-\\d]+)%* reduced $name$$")(f) }
-  def plusTo(name: js.String)(f: (ComputedItem, Double) => Unit) { regex1(s"^([.+-\\d]+)%* to $name$$")(f) }
-  def addsDamage(name: js.String)(f: (ComputedItem, Double, Double) => Unit) {
-    regex2(s"^Adds ([\\d]+)-([\\d]+) $name Damage$$")(f)
+  def increased(name: js.String)(f: (ComputedItem, Double) => Unit) = { regex1(s"^([.+-\\d]+)%* increased $name$$")(f) }
+  def reduced(name: js.String)(f: (ComputedItem, Double) => Unit) = { regex1(s"^([.+-\\d]+)%* reduced $name$$")(f) }
+  def plusTo(name: js.String)(f: (ComputedItem, Double) => Unit) = { regex1(s"^([.+-\\d]+)%* to $name$$")(f) }
+  def addsDamage(element: js.String)(f: (ComputedItem, Double, Double) => Unit) = {
+    regex2(s"^Adds ([\\d]+)-([\\d]+) $element Damage$$")(f)
   }
-  def level(name: js.String)(f: (ComputedItem, Double) => Unit) {
+  def level(name: js.String)(f: (ComputedItem, Double) => Unit) = {
     val a = if (name.isEmpty) "" else name + " "
     val r = s"^([.+-\\d]+)%* to Level of ${a}Gems in this item$$"
     regex1(r)(f)
   }
-  def simple1(prefix: js.String, suffix: js.String)(f: (ComputedItem, Double) => Unit) {
+  def simple1(prefix: js.String, suffix: js.String)(f: (ComputedItem, Double) => Unit) = {
     val a = if (prefix.isEmpty) "" else prefix + " "
     val b = if (suffix.isEmpty) "" else " " + suffix
     val r = s"^$a([.+-\\d]+)%*$b$$"
     regex1(r)(f)
   }
 
-
+//BEGIN AFFIXES
   for (x <- Attributes.all) {
     plusTo(x.cap)(_.plusTo.attribute.+=(x, _))
     level(x.cap)(_.gemLevel.attribute.+=(x, _))
@@ -131,9 +132,7 @@ object AffixesParser {
   for (x <- Elements.all) {
     increased(s"${x.cap} Damage")(_.increased.damage.+=(x, _))
     plusTo(s"${x.cap} Resistance")(_.plusTo.resistance.+=(x, _))
-    addsDamage(x.cap) { (i, min, max) =>
-      i.damages(x) +=(min, max)
-    }
+    addsDamage(x.cap)(_.damages(x).+=(_, _))
     level(x.cap)(_.gemLevel.element.+=(x, _))
   }
 
@@ -164,7 +163,7 @@ object AffixesParser {
   increased("Projectile Speed")(_.increased.projectileSpeed += _)
   increased("Accuracy Rating")(_.increased.accuracyRating += _)
   increased("Block Recovery")(_.increased.blockRecovery += _)
-  increased("Elemental Damage"){ (i, n) =>
+  increased("Elemental Damage") { (i, n) =>
     i.increased.elementalDamage += n
     i.increased.damage.fire += n
     i.increased.damage.cold += n
@@ -263,5 +262,3 @@ object AffixesParser {
   val all = _all.toList
 
 }
-
-//20% increased Physical Damage

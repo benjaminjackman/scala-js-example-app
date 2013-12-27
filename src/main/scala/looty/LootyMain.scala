@@ -5,6 +5,9 @@ import looty.views.{RefreshView, LootGrid}
 import scala.collection.mutable.ArrayBuffer
 import cgta.ojs
 import org.scalajs.jquery.JQueryStatic
+import looty.mods.ModsCsvParser
+import scala.concurrent.Future
+import cgta.ojs.lang.JsFuture
 
 
 //////////////////////////////////////////////////////////////
@@ -44,7 +47,7 @@ object LootyMain {
     val crossroads = global.crossroads
     val hasher = global.hasher
     crossroads.addRoute("home", () => loadHome())
-    crossroads.addRoute("grid", () => loadLooty())
+    crossroads.addRoute("grid", () => loadLooty())uld
     crossroads.addRoute("refresh", () => loadRefresh())
     crossroads.routed.add(global.console.log, console)
     if(hasher.getURL().toString.endsWith("home")) {
@@ -58,12 +61,20 @@ object LootyMain {
     hasher.init()
   }
 
+  def initComponents() : Future[_] = {
+    JsFuture.sequence(List(ModsCsvParser.init()))
+  }
+
 
   def main(args: Array[String]) {
+    initComponents().foreach { _ =>
+      addRoutes()
+    }
+    //Former Experiments
     //tryJsObj()
     //loadLooty()
-    addRoutes()
   }
+
 
 
 

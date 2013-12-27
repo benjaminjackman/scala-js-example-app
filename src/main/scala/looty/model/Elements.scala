@@ -11,6 +11,7 @@ package model
 
 
 object Elements {
+
   def of[A](a: => A) = new Elements[A] {
     val physical : A = a
     val fire     : A = a
