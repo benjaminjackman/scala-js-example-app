@@ -135,9 +135,9 @@ object AffixesParser2 {
     }
 
     for (x <- Elements.all) {
-//      increased(s"${x.cap} Damage")(_.increased.damage.+=(x, _))
+      increased(s"${x.cap} Damage")(_.increased.damage.+=(x, _))
       plusTo(s"${x.cap} Resistance")(_.plusTo.resistance.+=(x, _))
-//      addsDamage(x.cap)(_.damages(x).+=(_, _))
+      addsDamage(x.cap)(_.damages(x).+=(_, _))
       level(x.cap)(_.gemLevel.element.+=(x, _))
     }
 

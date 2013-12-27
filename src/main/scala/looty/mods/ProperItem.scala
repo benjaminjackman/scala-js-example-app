@@ -1,7 +1,7 @@
 package looty
 package mods
 
-import looty.model.{LifeAndMana, Elements}
+import looty.model.{Attributes, LifeAndMana, Elements}
 
 
 //////////////////////////////////////////////////////////////
@@ -36,47 +36,104 @@ object ProperItem {
 
 class ProperItem {
 
-  val localDamages = Elements of ProperItemProp2()
-  val baseDamages  = Elements of ProperItemProp2()
+  private def p1() = ProperItemProp1()
+  private def p2() = ProperItemProp2()
 
-  object increased {
-    //    val localPhysicalDamage = Elements.of(ProperItemProp1())
-    val localPhysicalDamage = ProperItemProp1()
 
-    val localArmour  = ProperItemProp1()
-    val globalArmour = ProperItemProp1()
-
-    val localEnergyShield  = ProperItemProp1()
-    val globalEnergyShield = ProperItemProp1()
-
-    val localEvasion  = ProperItemProp1()
-    val globalEvasion = ProperItemProp1()
-
-    val flaskRecoveryRate = LifeAndMana of ProperItemProp1()
+  object damage {
+    val local = Elements of p2()
+    val base  = Elements of p2()
   }
 
-  val reflects = ProperItemProp1()
+  object increased {
+    val movementSpeed = p1()
+
+
+    val manaRegenerationRate = p1()
+
+    val quantityOfItemsFound = p1()
+    val rarityOfItemsFound   = p1()
+
+    val flaskChargesGained = p1()
+
+    val flaskEffectDuration = p1()
+
+    //    val localPhysicalDamage = Elements.of(p1())
+    val localPhysicalDamage = p1()
+    val elementalDamage     = Elements of p1()
+
+    val localArmour  = p1()
+    val globalArmour = p1()
+
+    val localEnergyShield  = p1()
+    val globalEnergyShield = p1()
+
+    val localEvasion  = p1()
+    val globalEvasion = p1()
+
+    val flaskRecoveryRate = LifeAndMana of p1()
+
+    val spellDamage                = p1()
+    val elementalDamageWithWeapons = p1()
+
+    val projectileSpeed = p1()
+    val accuracyRating  = p1()
+    val attackSpeed     = p1()
+    val castSpeed       = p1()
+
+    val globalCriticalStrikeMultiplier = p1()
+    val globalCriticalStrikeChance     = p1()
+    val localCriticalStrikeChance      = p1()
+    val spellCriticalStrikeChance      = p1()
+
+    val blockAndStunRecovery  = p1()
+    val stunDurationOnEnemies = p1()
+
+  }
+
+  object reduced {
+    val flaskChargesUsed      = p1()
+    val attributeRequirements = p1()
+    val enemyStunThreshold    = p1()
+  }
+
+  object other {
+    val reflects                 = p1()
+    val additionalBlockChance    = p1()
+    val lifeOnHit                = p1()
+    val lifeRegeneratedPerSecond = p1()
+    val lifeAndManaOnKill        = LifeAndMana of p1()
+    val lifeAndManaLeech         = LifeAndMana of p1()
+  }
 
   object plusTo {
-    val localArmour  = ProperItemProp1()
-    val globalArmour = ProperItemProp1()
+    val localArmour  = p1()
+    val globalArmour = p1()
 
-    val localEnergyShield  = ProperItemProp1()
-    val globalEnergyShield = ProperItemProp1()
+    val localEnergyShield  = p1()
+    val globalEnergyShield = p1()
 
-    val localEvasion  = ProperItemProp1()
-    val globalEvasion = ProperItemProp1()
+    val localEvasion  = p1()
+    val globalEvasion = p1()
+
+    val allAttributes = p1()
+
+    val attributes    = Attributes of p1()
+    val resistance    = Elements of p1()
+    val allResistance = p1()
+
+    val lifeAndMana = LifeAndMana of p1()
   }
 
   object gem {
-    val bow = ProperItemProp1()
-    val minion = ProperItemProp1()
-    val melee = ProperItemProp1()
-    val cold = ProperItemProp1()
-    val fire = ProperItemProp1()
-    val lightning = ProperItemProp1()
-    val any = ProperItemProp1()
-    def apply(g : String) = {
+    val bow       = p1()
+    val minion    = p1()
+    val melee     = p1()
+    val cold      = p1()
+    val fire      = p1()
+    val lightning = p1()
+    val any       = p1()
+    def apply(g: String) = {
       g match {
         case "Bow" => Some(bow)
         case "Minion" => Some(minion)
@@ -89,7 +146,6 @@ class ProperItem {
       }
     }
   }
-
 
   //  object increased {
   //    val damage                         = Elements mutable 0.0

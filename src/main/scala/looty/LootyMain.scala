@@ -47,7 +47,7 @@ object LootyMain {
     val crossroads = global.crossroads
     val hasher = global.hasher
     crossroads.addRoute("home", () => loadHome())
-    crossroads.addRoute("grid", () => loadLooty())uld
+    crossroads.addRoute("grid", () => loadLooty())
     crossroads.addRoute("refresh", () => loadRefresh())
     crossroads.routed.add(global.console.log, console)
     if(hasher.getURL().toString.endsWith("home")) {
